@@ -1,0 +1,394 @@
+# Laravel specific
+/vendor/
+/node_modules/
+/public/hot
+/public/storage
+/storage/*.key
+/storage/app/public
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/testing
+/storage/framework/views
+/storage/logs/*.log
+/bootstrap/cache/*.php
+
+# Environment files
+.env
+.env.backup
+.env.production
+.env.local
+.env.*.local
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Build outputs
+/public/build
+/public/mix-manifest.json
+
+# Composer
+composer.phar
+
+# Laravel Mix
+/public/css
+/public/js
+/public/mix-manifest.json
+
+# Laravel Telescope
+/storage/telescope
+
+# Laravel Horizon
+/storage/horizon
+
+# Laravel Passport
+/storage/oauth-*.key
+
+# Laravel Sanctum
+/storage/sanctum
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Cache
+*.cache
+
+# Compiled assets
+/public/assets
+/public/css
+/public/js
+
+# Package files
+*.tar.gz
+*.zip
+
+# Local configuration
+config/local.php
+
+# Testing
+/coverage
+/.phpunit.result.cache
+/phpunit.xml
+
+# Laravel specific testing
+/tests/Browser/screenshots
+/tests/Browser/console
+
+# Laravel Dusk
+/tests/Browser/screenshots
+/tests/Browser/console
+
+# Laravel Mix
+/public/hot
+/public/storage
+/storage/*.key
+
+# Laravel Nova
+/nova
+
+# Laravel Spark
+/spark
+
+# Laravel Cashier
+/storage/cashier
+
+# Laravel Socialite
+/storage/socialite
+
+# Laravel Scout
+/storage/scout
+
+# Laravel Horizon
+/storage/horizon
+
+# Laravel Telescope
+/storage/telescope
+
+# Laravel Passport
+/storage/oauth-*.key
+
+# Laravel Sanctum
+/storage/sanctum
+
+# Laravel Fortify
+/storage/fortify
+
+# Laravel Jetstream
+/storage/jetstream
+
+# Laravel Breeze
+/storage/breeze
+
+# Laravel Livewire
+/storage/livewire
+
+# Laravel Inertia
+/storage/inertia
+
+# Laravel Filament
+/storage/filament
+
+# Laravel Nova
+/storage/nova
+
+# Laravel Spark
+/storage/spark
+
+# Laravel Cashier
+/storage/cashier
+
+# Laravel Socialite
+/storage/socialite
+
+# Laravel Scout
+/storage/scout
+
+# Laravel Horizon
+/storage/horizon
+
+# Laravel Telescope
+/storage/telescope
+
+# Laravel Passport
+/storage/oauth-*.key
+
+# Laravel Sanctum
+/storage/sanctum
+
+# Laravel Fortify
+/storage/fortify
+
+# Laravel Jetstream
+/storage/jetstream
+
+# Laravel Breeze
+/storage/breeze
+
+# Laravel Livewire
+/storage/livewire
+
+# Laravel Inertia
+/storage/inertia
+
+# Laravel Filament
+/storage/filament
+
+# Custom application specific
+/uploads/
+/backups/
+/exports/
+/imports/
+
+# Laravel specific cache
+/bootstrap/cache/packages.php
+/bootstrap/cache/services.php
+/bootstrap/cache/config.php
+/bootstrap/cache/routes.php
+/bootstrap/cache/events.php
+
+# Laravel Mix
+/public/css/
+/public/js/
+/public/mix-manifest.json
+
+# Laravel Vite
+/public/build/
+
+# Laravel Sail
+docker-compose.override.yml
+
+# Laravel Herd
+/.herd/
+
+# Laravel Valet
+/.valet/
+
+# Laravel Homestead
+Homestead.json
+Homestead.yaml
+Vagrantfile
+
+# Laravel Dusk
+/tests/Browser/screenshots
+/tests/Browser/console
+
+# Laravel Mix
+/public/hot
+/public/storage
+/storage/*.key
+
+# Laravel Nova
+/nova
+
+# Laravel Spark
+/spark
+
+# Laravel Cashier
+/storage/cashier
+
+# Laravel Socialite
+/storage/socialite
+
+# Laravel Scout
+/storage/scout
+
+# Laravel Horizon
+/storage/horizon
+
+# Laravel Telescope
+/storage/telescope
+
+# Laravel Passport
+/storage/oauth-*.key
+
+# Laravel Sanctum
+/storage/sanctum
+
+# Laravel Fortify
+/storage/fortify
+
+# Laravel Jetstream
+/storage/jetstream
+
+# Laravel Breeze
+/storage/breeze
+
+# Laravel Livewire
+/storage/livewire
+
+# Laravel Inertia
+/storage/inertia
+
+# Laravel Filament
+/storage/filament
+
+# Laravel Nova
+/storage/nova
+
+# Laravel Spark
+/storage/spark
+
+# Laravel Cashier
+/storage/cashier
+
+# Laravel Socialite
+/storage/socialite
+
+# Laravel Scout
+/storage/scout
+
+# Laravel Horizon
+/storage/horizon
+
+# Laravel Telescope
+/storage/telescope
+
+# Laravel Passport
+/storage/oauth-*.key
+
+# Laravel Sanctum
+/storage/sanctum
+
+# Laravel Fortify
+/storage/fortify
+
+# Laravel Jetstream
+/storage/jetstream
+
+# Laravel Breeze
+/storage/breeze
+
+# Laravel Livewire
+/storage/livewire
+
+# Laravel Inertia
+/storage/inertia
+
+# Laravel Filament
+/storage/filament
