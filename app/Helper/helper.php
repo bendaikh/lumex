@@ -222,16 +222,22 @@ if (!function_exists('generateSettings')) {
 if (!function_exists('getAdminAllSetting')) {
     function getAdminAllSetting()
     {
-        // Laravel cache
-        return Cache::rememberForever('admin_settings', function () {
-            $super_admin = User::where('type', 'super admin')->first();
-            $settings = [];
-            if ($super_admin) {
-                $settings = Setting::where('created_by', $super_admin->id)->where('workspace', $super_admin->active_workspace)->pluck('value', 'key')->toArray();
-            }
+        try {
+            // Laravel cache
+            return Cache::rememberForever('admin_settings', function () {
+                $super_admin = User::where('type', 'super admin')->first();
+                $settings = [];
+                if ($super_admin) {
+                    $settings = Setting::where('created_by', $super_admin->id)->where('workspace', $super_admin->active_workspace)->pluck('value', 'key')->toArray();
+                }
 
-            return $settings;
-        });
+                return $settings;
+            });
+        } catch (\Exception $e) {
+            // If database connection fails, return empty settings
+            \Log::warning('Database connection failed in getAdminAllSetting: ' . $e->getMessage());
+            return [];
+        }
     }
 }
 
