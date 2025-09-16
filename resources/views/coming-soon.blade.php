@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coming Soon | Lumex</title>
     <meta name="description" content="Lumex - Electrical solutions. We're launching something powerful soon.">
+    <link rel="icon" href="{{ get_file('uploads/logo/favicon.png') }}" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -86,7 +87,7 @@
             <div class="left">
                 <div class="brand">
                     <div class="logo" aria-hidden="true">
-                        <img src="{{ asset('favicon.ico') }}" alt="Lumex Favicon">
+                        <img src="{{ get_file('uploads/logo/favicon.png') }}" alt="Lumex Favicon">
                     </div>
                     <h1>Lumex Lighting</h1>
                 </div>
