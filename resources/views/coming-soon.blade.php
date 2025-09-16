@@ -21,17 +21,48 @@
         .card{position:relative;width:100%;max-width:980px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 0 0 1px rgba(255,59,59,.06),0 20px 60px rgba(0,0,0,.45);overflow:hidden}
         .grid{display:grid;grid-template-columns:1.1fr .9fr}
         @media (max-width:900px){.grid{grid-template-columns:1fr}.right{display:none}}
+        /* Electricity-themed side decor */
+        .side-decor{position:fixed;top:0;bottom:0;width:180px;pointer-events:none;z-index:1}
+        .side-decor .wrap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;filter:drop-shadow(0 6px 22px rgba(0,209,255,.2));animation:floatY 12s ease-in-out infinite}
+        .side-decor svg,.side-decor .glow{opacity:.22}
+        /* animated white-red gradient bars at sides */
+        .side-gradient{position:absolute;top:30px;bottom:30px;width:18px;border-radius:14px;background:linear-gradient(180deg,#ffffff 0%, #ff7575 35%, #ffffff 70%, #ff3b3b 100%);background-size:100% 220%;animation:slideGradient 5.5s linear infinite;opacity:.95}
+        .side-left .side-gradient{left:24px;box-shadow:0 0 18px rgba(255,59,59,.35), 0 0 6px rgba(255,255,255,.5)}
+        .side-right .side-gradient{right:24px;box-shadow:0 0 18px rgba(255,59,59,.35), 0 0 6px rgba(255,255,255,.5)}
+        @keyframes slideGradient{0%{background-position:0 0}100%{background-position:0 200%}}
+        .side-left{left:0}
+        .side-right{right:0}
+        .bolt{width:68px;height:68px}
+        .coil{width:58px;height:58px}
+        .plug{width:60px;height:60px}
+        .spark{width:62px;height:62px}
+        .wave{width:66px;height:66px}
+        .glow{position:absolute;inset:auto;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(closest-side,rgba(0,209,255,.14),transparent 70%)}
+        .glow.yellow{background:radial-gradient(closest-side,rgba(255,209,102,.14),transparent 70%)}
+        .glow.red{background:radial-gradient(closest-side,rgba(255,59,59,.12),transparent 70%)}
+        @keyframes pulseGlow{0%,100%{opacity:.18}50%{opacity:.35}}
+        .wrap .glow{animation:pulseGlow 4.5s ease-in-out infinite}
+        /* motion */
+        @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        @keyframes zig{0%,100%{transform:translateX(0) rotate(-6deg)}50%{transform:translateX(6px) rotate(-4deg)}}
+        @keyframes flicker{0%,19%,21%,23%,60%,100%{opacity:1}20%,22%{opacity:.4}}
+        .animate-float{animation:floatY 6s ease-in-out infinite}
+        .animate-zig{animation:zig 7s ease-in-out infinite}
+        .animate-flicker{animation:flicker 3.5s linear infinite}
+        @media (max-width:1200px){.side-decor{display:none}}
         .left{padding:56px 48px}
         .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
         .logo{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--primary),#ff8c00);box-shadow:0 0 0 2px rgba(255,59,59,.25),0 6px 18px rgba(0,0,0,.35)}
         .logo svg,.logo img{filter:drop-shadow(0 2px 8px rgba(0,0,0,.35));width:22px;height:22px}
         .brand h1{margin:0;font-weight:800;letter-spacing:.5px}
-        .badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#06121a;background:linear-gradient(135deg,var(--red),var(--accent));padding:6px 10px;border-radius:999px;font-weight:700;margin-top:8px}
-        .title{font-size:42px;line-height:1.15;margin:22px 0 14px}
+        .badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#06121a;background:linear-gradient(135deg,var(--red),#ffffff);padding:6px 10px;border-radius:999px;font-weight:700;margin-top:8px}
+        .title{font-size:34px;line-height:1.15;margin:22px 0 14px}
+        .title.motion{background:linear-gradient(90deg, var(--text) 0%, #ffd166 50%, var(--text) 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:titleShimmer 5s linear infinite}
+        @keyframes titleShimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
         .subtitle{color:var(--muted);font-size:16px;max-width:56ch}
         .timer{display:flex;gap:14px;margin:28px 0 34px}
         .tbox{flex:1;min-width:70px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 10px;text-align:center}
-        .tbox strong{display:block;font-size:26px;color:var(--red)}
+        .tbox strong{display:block;font-size:26px;color:#ffffff}
         .tbox span{color:var(--muted);font-size:12px}
         .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
         .cta a{display:inline-flex;align-items:center;gap:10px;text-decoration:none;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);color:var(--text);background:rgba(255,255,255,.02)}
@@ -76,6 +107,52 @@
     -->
     </head>
 <body>
+    <!-- Electricity-themed side decorations -->
+    <div class="side-decor side-left" aria-hidden="true">
+        <div class="wrap">
+            <div class="side-gradient"></div>
+            <div class="glow"></div>
+            <svg class="bolt" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M35 2 8 38h15l-6 24 39-41H41l4-19H35Z" fill="#00d1ff" opacity=".9"/>
+            </svg>
+            <svg class="coil" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#ffd166"/>
+                        <stop offset="1" stop-color="#ff8c00"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="32" cy="32" r="26" stroke="url(#g1)" stroke-width="4" opacity=".9"/>
+                <circle cx="32" cy="32" r="16" stroke="#00d1ff" stroke-width="3" stroke-dasharray="6 6"/>
+            </svg>
+            <div class="glow yellow"></div>
+            <!-- red themed with motion -->
+            <svg class="spark animate-float" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32 6l4 12h12l-10 8 4 12-10-7-10 7 4-12-10-8h12l4-12z" fill="#ff3b3b" opacity=".9"/>
+            </svg>
+            <div class="glow red"></div>
+        </div>
+    </div>
+    <div class="side-decor side-right" aria-hidden="true">
+        <div class="wrap">
+            <div class="side-gradient"></div>
+            <div class="glow yellow"></div>
+            <svg class="plug animate-zig" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 10v14m20-14v14" stroke="#ffd166" stroke-width="4" stroke-linecap="round"/>
+                <rect x="14" y="22" width="36" height="20" rx="10" fill="rgba(255,255,255,.06)" stroke="#00d1ff" stroke-width="3"/>
+                <path d="M32 42v10" stroke="#00d1ff" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            <svg class="bolt animate-flicker" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M29 6 6 36h14l-5 22 32-34H36l3-18H29Z" fill="#ffd166" opacity=".9"/>
+            </svg>
+            <div class="glow"></div>
+            <!-- red waveform with motion -->
+            <svg class="wave animate-float" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 30h16l6-18 10 36 10-36 10 36 10-36 10 36 10-36 6 18h18" stroke="#ff3b3b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="glow red"></div>
+        </div>
+    </div>
     <div class="topbar">
         <a class="login-btn" href="{{ route('login') }}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 17l5-5-5-5v3H3v4h7v3zm9-13h-8v2h8v12h-8v2h8a2 2 0 002-2V6a2 2 0 00-2-2z"/></svg>
@@ -92,7 +169,7 @@
                     <h1>Lumex Lighting</h1>
                 </div>
                 <span class="badge">Suivi de projet et Coordination</span>
-                <h2 class="title">Conception et fourniture d’éclairage sur mesure, alliant performance et design.</h2>
+                <h2 class="title motion">Éclairage sur mesure, performance et design.</h2>
                 <p class="subtitle">Depuis 2007, Lumex accompagne architectes, entreprises et particuliers avec des solutions d’éclairage sur mesure adaptées à chaque besoin. Notre nouveau site arrive bientôt.</p>
 
                 <div class="timer" role="timer" aria-live="polite">
