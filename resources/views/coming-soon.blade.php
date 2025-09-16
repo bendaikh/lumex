@@ -9,28 +9,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root{--bg:#0b1020;--card:#0f1733;--primary:#ffd166;--accent:#00d1ff;--text:#e8edf7;--muted:#a8b0c6}
+        :root{--bg:#0b1020;--card:#0f1733;--primary:#ffd166;--accent:#00d1ff;--red:#ff3b3b;--text:#e8edf7;--muted:#a8b0c6}
         *{box-sizing:border-box}
         html,body{height:100%}
-        body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1100px 500px at 70% 10%,rgba(0,209,255,.08),transparent),radial-gradient(800px 400px at 0% 100%,rgba(255,209,102,.08),transparent),var(--bg);color:var(--text);}
+        body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1100px 500px at 70% 10%,rgba(0,209,255,.08),transparent),radial-gradient(900px 450px at 10% 10%,rgba(255,59,59,.08),transparent),radial-gradient(800px 400px at 0% 100%,rgba(255,209,102,.08),transparent),var(--bg);color:var(--text);}
         .container{min-height:100%;display:flex;align-items:center;justify-content:center;padding:40px}
         .topbar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:flex-end;align-items:center;padding:14px 24px;background:linear-gradient(180deg,rgba(11,16,32,.75),rgba(11,16,32,0));z-index:10}
         .login-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--text);text-decoration:none;font-weight:700}
-        .login-btn:hover{background:rgba(255,255,255,.12)}
-        .card{position:relative;width:100%;max-width:980px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 20px 60px rgba(0,0,0,.45);overflow:hidden}
+        .login-btn:hover{background:rgba(255,59,59,.12);border-color:rgba(255,59,59,.35)}
+        .card{position:relative;width:100%;max-width:980px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 0 0 1px rgba(255,59,59,.06),0 20px 60px rgba(0,0,0,.45);overflow:hidden}
         .grid{display:grid;grid-template-columns:1.1fr .9fr}
         @media (max-width:900px){.grid{grid-template-columns:1fr}.right{display:none}}
         .left{padding:56px 48px}
         .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-        .logo{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--primary),#ff8c00)}
-        .logo svg{filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+        .logo{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--primary),#ff8c00);box-shadow:0 0 0 2px rgba(255,59,59,.25),0 6px 18px rgba(0,0,0,.35)}
+        .logo svg,.logo img{filter:drop-shadow(0 2px 8px rgba(0,0,0,.35));width:22px;height:22px}
         .brand h1{margin:0;font-weight:800;letter-spacing:.5px}
-        .badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#06121a;background:linear-gradient(135deg,var(--accent),#59f3ff);padding:6px 10px;border-radius:999px;font-weight:700;margin-top:8px}
+        .badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#06121a;background:linear-gradient(135deg,var(--red),var(--accent));padding:6px 10px;border-radius:999px;font-weight:700;margin-top:8px}
         .title{font-size:42px;line-height:1.15;margin:22px 0 14px}
         .subtitle{color:var(--muted);font-size:16px;max-width:56ch}
         .timer{display:flex;gap:14px;margin:28px 0 34px}
         .tbox{flex:1;min-width:70px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 10px;text-align:center}
-        .tbox strong{display:block;font-size:26px}
+        .tbox strong{display:block;font-size:26px;color:var(--red)}
         .tbox span{color:var(--muted);font-size:12px}
         .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
         .cta a{display:inline-flex;align-items:center;gap:10px;text-decoration:none;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);color:var(--text);background:rgba(255,255,255,.02)}
@@ -44,7 +44,9 @@
         .panel-inner{border-radius:14px;border:1px dashed rgba(255,255,255,.14);padding:18px}
         .list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
         .chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);padding:10px 12px;border-radius:10px;font-size:13px;display:flex;gap:8px;align-items:center}
+        .chip:hover{border-color:rgba(255,59,59,.5)}
         .footer{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:var(--muted)}
+        .footer span:last-child{color:var(--red)}
         .sr{position:absolute;left:-9999px}
     </style>
     <script>
@@ -84,15 +86,13 @@
             <div class="left">
                 <div class="brand">
                     <div class="logo" aria-hidden="true">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#111" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13 2L3 14h6l-2 8 10-12h-6l2-8z"/>
-                        </svg>
+                        <img src="{{ asset('favicon.ico') }}" alt="Lumex Favicon">
                     </div>
-                    <h1>Lumex Electric</h1>
+                    <h1>Lumex Lighting</h1>
                 </div>
-                <span class="badge">Powering businesses • Electrical solutions</span>
-                <h2 class="title">A brighter, smarter electrical experience is coming soon.</h2>
-                <p class="subtitle">We’re crafting a modern platform for everything related to electricity—installations, maintenance, and smart energy solutions. Stay tuned.</p>
+                <span class="badge">Suivi de projet et Coordination</span>
+                <h2 class="title">Conception et fourniture d’éclairage sur mesure, alliant performance et design.</h2>
+                <p class="subtitle">Depuis 2007, Lumex accompagne architectes, entreprises et particuliers avec des solutions d’éclairage sur mesure adaptées à chaque besoin. Notre nouveau site arrive bientôt.</p>
 
                 <div class="timer" role="timer" aria-live="polite">
                     <div class="tbox"><strong id="d">00</strong><span>Days</span></div>
@@ -101,19 +101,16 @@
                     <div class="tbox"><strong id="s">00</strong><span>Seconds</span></div>
                 </div>
 
-                <div class="cta">
-                    <a class="primary" href="mailto:contact@lumex.example">Get in touch</a>
-                    <a href="tel:+0000000000">Call us</a>
-                </div>
+                
 
                 <div class="contact">
                     <div>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.6 10.2c1.2 2.4 3.1 4.3 5.5 5.5l2-2c.3-.3.8-.4 1.2-.2 1 .3 2 .5 3 .5.7 0 1.2.5 1.2 1.2V18c0 .7-.5 1.2-1.2 1.2C10.8 19.2 4.8 13.2 4.8 5.4 4.8 4.7 5.3 4.2 6 4.2h2.7c.7 0 1.2.5 1.2 1.2 0 1 .2 2 .5 3 .1.4 0 .9-.3 1.2l-2 2.6z" fill="currentColor"/></svg>
-                        <span id="phone-text">Phone: +000 000 0000</span>
+                        <span id="phone-text">Phone: +212661142161</span>
                     </div>
                     <div>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.2 6.6 11.5 7.1 11.9.5.4 1.3.4 1.8 0C13.4 21.5 20 15.2 20 10c0-4.4-3.6-8-8-8zm0 11.2c-1.8 0-3.2-1.4-3.2-3.2S10.2 6.8 12 6.8s3.2 1.4 3.2 3.2-1.4 3.2-3.2 3.2z" fill="currentColor"/></svg>
-                        <span id="address-text">Address: Your Company Address</span>
+                        <span id="address-text">Address: 132 Rue Brahim Nakhai, Casablanca</span>
                     </div>
                 </div>
             </div>
@@ -122,12 +119,11 @@
                 <div class="panel">
                     <div class="panel-inner">
                         <div class="list">
-                            <div class="chip">⚡ Industrial Installations</div>
-                            <div class="chip">🔌 Residential Services</div>
-                            <div class="chip">💡 Smart Lighting</div>
-                            <div class="chip">🔋 Backup Power</div>
-                            <div class="chip">🛡️ Safety Audits</div>
-                            <div class="chip">📈 Energy Optimization</div>
+                            <div class="chip">💡 Conception et étude d’éclairage</div>
+                            <div class="chip">📦 Fourniture du matériel d’éclairage</div>
+                            <div class="chip">🤝 Conseil & Accompagnement</div>
+                            <div class="chip">⚙️ Optimisation Énergétique</div>
+                            <div class="chip">🏛️ Scénographie de Façades</div>
                         </div>
                     </div>
                     <div class="footer">
