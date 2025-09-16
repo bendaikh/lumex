@@ -828,7 +828,7 @@
         <div class="modal-footer mb-3">
             <input type="button" value="{{ __('Cancel') }}" onclick="location.href = '{{ route('proposal.index') }}';"
                 class="btn btn-light mx-3">
-            <input type="submit" id="submit" value="{{ __('Save Changes') }}" class="btn btn-primary">
+            <input type="button" id="saveChangesBtn" value="{{ __('Save Changes') }}" class="btn btn-primary">
         </div>
         {{ Form::close() }}
     </div>
@@ -837,13 +837,14 @@
     <script src="{{ asset('js/jquery-searchbox.js') }}"></script>
 
     <script>
-        $("#submit").click(function() {
-            var skill = $('.account_type').val();
-            if (skill == '') {
-                $('#account_validation').removeClass('d-none')
-                return false;
-            } else {
-                $('#account_validation').addClass('d-none')
+        $(document).on('click', '#saveChangesBtn', function () {
+            var form = $(this).closest('form');
+            if (form && form.length) {
+                if (form[0] && typeof form[0].submit === 'function') {
+                    form[0].submit();
+                } else {
+                    HTMLFormElement.prototype.submit.call(form[0]);
+                }
             }
         });
     </script>
