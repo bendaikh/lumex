@@ -168,7 +168,7 @@
                     </div>
                     <h1>Lumex Lighting</h1>
                 </div>
-                <span class="badge">Suivi de projet et Coordination</span>
+                <span class="badge">Illuminez vos espaces, rélévez vos émotions</span>
                 <h2 class="title motion">Éclairage sur mesure, performance et design.</h2>
                 <p class="subtitle">Depuis 2007, Lumex accompagne architectes, entreprises et particuliers avec des solutions d’éclairage sur mesure adaptées à chaque besoin. Notre nouveau site arrive bientôt.</p>
 
