@@ -51,6 +51,15 @@ use Illuminate\Support\Facades\File;
 // Auth::routes();
 require __DIR__ . '/auth.php';
 
+// Serve favicon for browsers requesting /favicon.ico
+Route::get('/favicon.ico', function () {
+    $path = public_path('uploads/logo/favicon.png');
+    if (File::exists($path)) {
+        return response()->file($path, ['Content-Type' => 'image/png']);
+    }
+    abort(404);
+});
+
 // custom domain code
 Route::middleware('domain-check')->group(function () {
     Route::get('/register/{lang?}', [RegisteredUserController::class, 'create'])->name('register');
