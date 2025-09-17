@@ -20,7 +20,38 @@
         .login-btn:hover{background:rgba(255,59,59,.12);border-color:rgba(255,59,59,.35)}
         .card{position:relative;width:100%;max-width:980px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 0 0 1px rgba(255,59,59,.06),0 20px 60px rgba(0,0,0,.45);overflow:hidden}
         .grid{display:grid;grid-template-columns:1.1fr .9fr}
+        
+        /* Mobile responsiveness improvements */
+        @media (max-width:1200px){.side-decor{display:none}}
         @media (max-width:900px){.grid{grid-template-columns:1fr}.right{display:none}}
+        @media (max-width:768px){
+            .container{padding:20px}
+            .topbar{padding:12px 16px}
+            .login-btn{padding:8px 12px;font-size:14px}
+            .card{border-radius:16px;margin:10px}
+        }
+        @media (max-width:480px){
+            .container{padding:15px}
+            .topbar{padding:10px 12px}
+            .login-btn{padding:6px 10px;font-size:13px;gap:6px}
+            .card{border-radius:12px}
+        }
+        
+        /* Extra small screens and landscape phones */
+        @media (max-width:360px){
+            .container{padding:10px}
+            .topbar{padding:8px 10px}
+            .login-btn{padding:5px 8px;font-size:12px}
+            .card{border-radius:10px}
+        }
+        
+        /* Landscape orientation adjustments */
+        @media (max-height:500px) and (orientation:landscape){
+            .container{padding:10px}
+            .left{padding:20px 24px}
+            .timer{margin:16px 0 20px}
+            .contact{margin-top:16px;padding-top:12px}
+        }
         /* Electricity-themed side decor */
         .side-decor{position:fixed;top:0;bottom:0;width:180px;pointer-events:none;z-index:1}
         .side-decor .wrap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;filter:drop-shadow(0 6px 22px rgba(0,209,255,.2));animation:floatY 12s ease-in-out infinite}
@@ -49,10 +80,10 @@
         .animate-float{animation:floatY 6s ease-in-out infinite}
         .animate-zig{animation:zig 7s ease-in-out infinite}
         .animate-flicker{animation:flicker 3.5s linear infinite}
-        @media (max-width:1200px){.side-decor{display:none}}
+        
         .left{padding:56px 48px}
         .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-        .logo{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--primary),#ff8c00);box-shadow:0 0 0 2px rgba(255,59,59,.25),0 6px 18px rgba(0,0,0,.35)}
+        .logo{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:transparent;box-shadow:0 0 0 2px rgba(255,59,59,.25),0 6px 18px rgba(0,0,0,.35)}
         .logo svg,.logo img{filter:drop-shadow(0 2px 8px rgba(0,0,0,.35));width:22px;height:22px}
         .brand h1{margin:0;font-weight:800;letter-spacing:.5px}
         .badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#06121a;background:linear-gradient(135deg,var(--red),#ffffff);padding:6px 10px;border-radius:999px;font-weight:700;margin-top:8px}
@@ -68,8 +99,58 @@
         .cta a{display:inline-flex;align-items:center;gap:10px;text-decoration:none;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);color:var(--text);background:rgba(255,255,255,.02)}
         .cta a.primary{background:linear-gradient(135deg,var(--primary),#ffb703);color:#0b0f1a;border:none;font-weight:800}
         .contact{margin-top:28px;padding-top:18px;border-top:1px dashed rgba(255,255,255,.12);display:grid;grid-template-columns:1fr 1fr;gap:14px}
-        @media (max-width:520px){.contact{grid-template-columns:1fr}.title{font-size:32px}}
         .contact div{display:flex;gap:10px;align-items:flex-start;color:var(--muted)}
+        
+        /* Enhanced mobile typography and spacing */
+        @media (max-width:768px){
+            .left{padding:32px 24px}
+            .brand{gap:12px;margin-bottom:16px}
+            .brand h1{font-size:20px}
+            .logo{width:36px;height:36px}
+            .logo svg,.logo img{width:18px;height:18px}
+            .badge{font-size:11px;padding:5px 8px;margin-top:6px}
+            .title{font-size:28px;margin:18px 0 12px}
+            .subtitle{font-size:15px;max-width:100%}
+            .timer{gap:10px;margin:24px 0 28px}
+            .tbox{padding:12px 8px;min-width:60px}
+            .tbox strong{font-size:22px}
+            .tbox span{font-size:11px}
+            .contact{margin-top:24px;padding-top:16px;gap:12px}
+            .contact div{font-size:14px}
+        }
+        @media (max-width:480px){
+            .left{padding:24px 20px}
+            .brand{gap:10px;margin-bottom:14px}
+            .brand h1{font-size:18px}
+            .logo{width:32px;height:32px}
+            .logo svg,.logo img{width:16px;height:16px}
+            .badge{font-size:10px;padding:4px 6px;margin-top:4px}
+            .title{font-size:24px;margin:16px 0 10px;line-height:1.2}
+            .subtitle{font-size:14px}
+            .timer{gap:8px;margin:20px 0 24px}
+            .tbox{padding:10px 6px;min-width:50px}
+            .tbox strong{font-size:18px}
+            .tbox span{font-size:10px}
+            .contact{margin-top:20px;padding-top:14px;gap:10px;grid-template-columns:1fr}
+            .contact div{font-size:13px;gap:8px}
+        }
+        
+        /* Extra small screens typography adjustments */
+        @media (max-width:360px){
+            .left{padding:20px 16px}
+            .brand h1{font-size:16px}
+            .logo{width:28px;height:28px}
+            .logo svg,.logo img{width:14px;height:14px}
+            .badge{font-size:9px;padding:3px 5px}
+            .title{font-size:20px;margin:14px 0 8px}
+            .subtitle{font-size:13px}
+            .timer{gap:6px;margin:16px 0 20px}
+            .tbox{padding:8px 4px;min-width:45px}
+            .tbox strong{font-size:16px}
+            .tbox span{font-size:9px}
+            .contact{margin-top:16px;padding-top:12px;gap:8px}
+            .contact div{font-size:12px;gap:6px}
+        }
         .right{position:relative;overflow:hidden}
         .hero{position:absolute;inset:0;background:radial-gradient(600px 300px at 30% 40%,rgba(0,209,255,.18),transparent),radial-gradient(600px 300px at 80% 70%,rgba(255,209,102,.18),transparent)}
         .panel{position:absolute;right:-30px;top:50%;transform:translateY(-50%) rotate(-6deg);width:520px;max-width:90%;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.5);padding:18px}
