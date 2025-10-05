@@ -69,6 +69,17 @@ class CompanySettingMenuListener
             'permission' => 'proposal manage'
         ]);
         $menu->add([
+            'title' => __('Delivery Note Print Settings'),
+            'name' => 'bon-de-livraison-settings',
+            'order' => 50,
+            'ignore_if' => [],
+            'depend_on' => [],
+            'route' => '',
+            'navigation' => 'bon-de-livraison-print-sidenav',
+            'module' => $module,
+            'permission' => 'proposal manage'
+        ]);
+        $menu->add([
             'title' => __('Invoice Print Settings'),
             'name' => 'invoice-settings',
             'order' => 60,

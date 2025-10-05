@@ -4,6 +4,27 @@
             <i class="ti ti-file text-white"></i>
         </a>
     </div>
+    @if ($proposal->is_convert_bon_de_livraison == 0 && $proposal->is_convert == 0 && $proposal->is_convert_retainer ==0)
+        @permission('proposal convert invoice')
+            <div class="action-btn bg-info ms-2">
+                {!! Form::open([
+                    'method' => 'get',
+                    'route' => ['bon-de-livraison.convert', $proposal->id],
+                    'id' => 'bon-de-livraison-form-' . $proposal->id,
+                ]) !!}
+                <a href="#"
+                    class="mx-3 btn btn-sm  align-items-center bs-pass-para show_confirm"
+                    data-bs-toggle="tooltip" title=""
+                    data-bs-original-title="{{ __('Convert to Delivery Note') }}"
+                    aria-label="{{__('Convert')}}"
+                    data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
+                    data-confirm-yes="bon-de-livraison-form-{{ $proposal->id }}">
+                    <i class="ti ti-truck text-white"></i>
+                </a>
+                {{ Form::close() }}
+            </div>
+        @endpermission
+    @endif
     @if ($proposal->is_convert == 0 && $proposal->is_convert_retainer ==0)
         @permission('proposal convert invoice')
             <div class="action-btn bg-success ms-2">

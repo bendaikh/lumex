@@ -735,6 +735,131 @@
             </div>
         </div>
     </div>
+    <!--Bon de Livraison print Setting-->
+    @php
+        $bon_de_livraison_template = isset($settings['bon_de_livraison_template']) ? $settings['bon_de_livraison_template'] : '';
+        $bon_de_livraison_color = isset($settings['bon_de_livraison_color']) ? $settings['bon_de_livraison_color'] : '';
+    @endphp
+    <div id="bon-de-livraison-print-sidenav" class="card">
+        <div class="card-header">
+            <h5>{{ __('Delivery Note Print Settings') }}</h5>
+            <small class="text-muted">{{ __('Edit your Company Delivery Note details') }}</small>
+        </div>
+        <div class="bg-none">
+            <div class="row company-setting">
+                <div class="">
+                    <form id="setting-form" method="post" action="{{ route('bon-de-livraison.template.setting') }}"
+                        enctype ="multipart/form-data">
+                        @csrf
+                        <div class="card-header card-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        {{ Form::label('bon_de_livraison_prefix', __('Prefix'), ['class' => 'form-label']) }}
+                                        {{ Form::text('bon_de_livraison_prefix', isset($settings['bon_de_livraison_prefix']) ? $settings['bon_de_livraison_prefix'] : '#BDL', ['class' => 'form-control', 'placeholder' => 'Enter Prefix']) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        {{ Form::label('bon_de_livraison_starting_number', __('Starting Number'), ['class' => 'form-label']) }}
+                                        {{ Form::number('bon_de_livraison_starting_number', isset($settings['bon_de_livraison_starting_number']) ? $settings['bon_de_livraison_starting_number'] : 1, ['class' => 'form-control', 'placeholder' => 'Enter Starting Number']) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {{ Form::label('bon_de_livraison_footer_title', __('Footer Title'), ['class' => 'form-label']) }}
+                                        {{ Form::text('bon_de_livraison_footer_title', isset($settings['bon_de_livraison_footer_title']) ? $settings['bon_de_livraison_footer_title'] : '', ['class' => 'form-control', 'placeholder' => 'Enter Footer Title']) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        {{ Form::label('bon_de_livraison_footer_notes', __('Footer Notes'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('bon_de_livraison_footer_notes', isset($settings['bon_de_livraison_footer_notes']) ? $settings['bon_de_livraison_footer_notes'] : '', ['class' => 'form-control', 'rows' => '1', 'placeholder' => 'Enter Footer Notes']) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card-header card-body">
+                                    <div class="form-group d-flex align-items-center justify-content-between">
+                                        {{ Form::label('bon_de_livraison_shipping_display', __('Shipping Display?'), ['class' => 'form-label']) }}
+                                        <div class="text-end form-check form-switch d-inline-block">
+                                            <input type="checkbox" class="form-check-input"
+                                            name="bon_de_livraison_shipping_display" id="bon_de_livraison_shipping_display"
+                                            {{ (isset($settings['bon_de_livraison_shipping_display']) ? $settings['bon_de_livraison_shipping_display'] : 'off') == 'on' ? 'checked' : '' }}>
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-flex align-items-center justify-content-between">
+                                        {{ Form::label('bon_de_livraison_qr_display', __('QR Display?'), ['class' => 'form-label']) }}
+                                        <div class="text-end form-check form-switch d-inline-block">
+                                            <input type="checkbox" class="form-check-input"
+                                            name="bon_de_livraison_qr_display" id="bon_de_livraison_qr_display"
+                                            {{ (isset($settings['bon_de_livraison_qr_display']) ? $settings['bon_de_livraison_qr_display'] : 'off') == 'on' ? 'checked' : '' }}>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="bon_de_livraison_template"
+                                            class="col-form-label">{{ __('Template') }}</label>
+                                        <select class="form-control" name="bon_de_livraison_template" id="bon_de_livraison_template">
+                                            @foreach (templateData()['templates'] as $key => $template)
+                                                <option value="{{ $key }}"
+                                                    {{ $bon_de_livraison_template == $key ? 'selected' : '' }}>
+                                                    {{ $template }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{{ __('Color Input') }}</label>
+                                        <div class="row gutters-xs">
+                                            @foreach (templateData()['colors'] as $key => $color)
+                                                <div class="col-auto">
+                                                    <label class="colorinput">
+                                                        <input name="bon_de_livraison_color" type="radio"
+                                                            value="{{ $color }}" class="colorinput-input"
+                                                            {{ $bon_de_livraison_color == $color ? 'checked' : '' }}>
+                                                        <span class="colorinput-color"
+                                                            style="background: #{{ $color }}"></span>
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-form-label">{{ __('Logo') }}</label>
+                                        <div class="choose-files mt-3">
+                                            <label for="bon_de_livraison_logo">
+                                                <div class=" bg-primary "> <i
+                                                        class="ti ti-upload px-1"></i>{{ __('Choose file here') }}
+                                                </div>
+                                                <img id="blah13" class="mt-3" src="" width="70%" />
+                                                <input type="file" class="form-control file" name="bon_de_livraison_logo"
+                                                    id="bon_de_livraison_logo" data-filename="bon_de_livraison_logo_update"
+                                                    onchange="document.getElementById('blah13').src = window.URL.createObjectURL(this.files[0])">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2 text-end">
+                                        <input type="submit" value="{{ __('Save Changes') }}"
+                                            class="btn btn-print-invoice  btn-primary m-r-10">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                @if (!empty($bon_de_livraison_template) && !empty($bon_de_livraison_color))
+                                    <iframe id="bon_de_livraison_frame" class="w-100 h-100" frameborder="0"
+                                        src="{{ route('bon-de-livraison.preview', [$bon_de_livraison_template, $bon_de_livraison_color]) }}"></iframe>
+                                @else
+                                    <iframe id="bon_de_livraison_frame" class="w-100 h-100" frameborder="0"
+                                        src="{{ route('bon-de-livraison.preview', ['template1', 'fffff']) }}"></iframe>
+                                @endif
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--Invoice print Setting-->
     @php
         $invoice_template = isset($settings['invoice_template']) ? $settings['invoice_template'] : '';

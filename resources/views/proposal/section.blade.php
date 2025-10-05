@@ -365,9 +365,9 @@
                             <th>{{ __('Quantity') }}</th>
                             <th>{{ __('Price') }} </th>
                             <th>{{ __('Discount') }}</th>
-                            <th>{{ __('Tax') }} (%)</th>
+                            <th style="display:none;">{{ __('Tax') }} (%)</th>
                             <th class="text-end">{{ __('Amount') }} <br>
-                                <small class="text-danger font-weight-bold">{{ __('After discount & tax') }}</small>
+                                <small class="text-danger font-weight-bold">{{ __('Total Price') }}</small>
                             </th>
                             <th></th>
                         </tr>
@@ -407,11 +407,10 @@
                             <td>
                                 <div class="form-group price-input input-group search-form" style="width: 160px">
                                     {{ Form::text('discount', '', ['class' => 'form-control discount', 'required' => 'required', 'placeholder' => __('Discount')]) }}
-                                    <span
-                                        class="input-group-text bg-transparent">{{ isset($company_settings['defult_currancy_symbol']) ? $company_settings['defult_currancy_symbol'] : '' }}</span>
+                                    <span class="input-group-text bg-transparent">%</span>
                                 </div>
                             </td>
-                            <td>
+                            <td style="display:none;">
                                 <div class="form-group">
                                     <div class="input-group">
                                         <div class="taxes "></div>
@@ -516,7 +515,7 @@
                             <th>{{ __('Discount') }}</th>
                             <th width="200px">{{ __('Tax') }} (%)</th>
                             <th class="text-end" width="200px">{{ __('Amount') }} <br><small
-                                    class="text-danger font-weight-bold">{{ __('After tax & discount') }}</small></th>
+                                    class="text-danger font-weight-bold">{{ __('Total Price') }}</small></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -538,8 +537,7 @@
                             <td>
                                 <div class="form-group price-input input-group search-form">
                                     {{ Form::text('discount', '', ['class' => 'form-control discount', 'placeholder' => __('Discount')]) }}
-                                    <span
-                                        class="input-group-text bg-transparent">{{ isset($company_settings['defult_currancy_symbol']) ? $company_settings['defult_currancy_symbol'] : '' }}</span>
+                                    <span class="input-group-text bg-transparent">%</span>
                                 </div>
                             </td>
                             <td>
@@ -647,7 +645,7 @@
                         <th>{{ __('Quantity') }}</th>
                         <th>{{ __('Price') }} </th>
                         <th>{{ __('Discount') }}</th>
-                        <th>{{ __('Tax') }} (%)</th>
+                        <th style="display:none;">{{ __('Tax') }} (%)</th>
                         <th class="text-end">{{ __('Amount') }} <br>
                             <small class="text-danger font-weight-bold">{{ __('After discount & tax') }}</small>
                         </th>
@@ -689,8 +687,7 @@
                         <td>
                             <div class="form-group price-input input-group search-form" style="width: 160px">
                                 {{ Form::text('discount', '', ['class' => 'form-control discount', 'required' => 'required', 'placeholder' => __('Discount')]) }}
-                                <span
-                                    class="input-group-text bg-transparent">{{ isset($company_settings['defult_currancy_symbol']) ? $company_settings['defult_currancy_symbol'] : '' }}</span>
+                                <span class="input-group-text bg-transparent">%</span>
                             </div>
                         </td>
                         <td>

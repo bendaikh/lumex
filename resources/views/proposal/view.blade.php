@@ -237,40 +237,26 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        @if (!empty($customer->billing_name) && !empty($customer->billing_address) && !empty($customer->billing_zip))
-                                            <div class="col">
-                                                <small class="font-style">
-                                                    <strong>{{__('Billed To')}} :</strong><br>
-                                                        {{ !empty($customer->billing_name) ? $customer->billing_name : '' }}<br>
-                                                        {{ !empty($customer->billing_address) ? $customer->billing_address : '' }}<br>
-                                                        {{ !empty($customer->billing_city) ? $customer->billing_city . ' ,' : '' }}
-                                                        {{ !empty($customer->billing_state) ? $customer->billing_state . ' ,' : '' }}
-                                                        {{ !empty($customer->billing_zip) ? $customer->billing_zip : '' }}<br>
-                                                        {{ !empty($customer->billing_country) ? $customer->billing_country : '' }}<br>
-                                                        {{ !empty($customer->billing_phone) ? $customer->billing_phone : '' }}<br>
-                                                    <strong>{{__('Tax Number ')}} : </strong>{{!empty($customer->tax_number)?$customer->tax_number:''}}
-
-                                                </small>
-                                            </div>
-                                        @endif
-                                        @if(!empty($company_settings['proposal_shipping_display']) && $company_settings['proposal_shipping_display'] =='on')
-                                            @if (!empty($customer->shipping_name) && !empty($customer->shipping_address) && !empty($customer->shipping_zip))
-                                                <div class="col">
-                                                    <small>
-                                                        <strong>{{__('Shipped To')}} :</strong><br>
-                                                        {{ !empty($customer->shipping_name) ? $customer->shipping_name : '' }}<br>
-                                                        {{ !empty($customer->shipping_address) ? $customer->shipping_address : '' }}<br>
-                                                        {{ !empty($customer->shipping_city) ? $customer->shipping_city .' ,': '' }}
-                                                        {{ !empty($customer->shipping_state) ? $customer->shipping_state .' ,': '' }}
-                                                        {{ !empty($customer->shipping_zip) ? $customer->shipping_zip : '' }}<br>
-                                                        {{ !empty($customer->shipping_country) ? $customer->shipping_country : '' }}<br>
-                                                        {{ !empty($customer->shipping_phone) ? $customer->shipping_phone : '' }}<br>
-                                                        <strong>{{__('Tax Number ')}} : </strong>{{!empty($customer->tax_number)?$customer->tax_number:''}}
-
-                                                    </small>
-                                                </div>
-                                            @endif
-                                        @endif
+                                        <div class="col">
+                                            <small class="font-style">
+                                                <strong>{{__('Client Information')}} :</strong><br>
+                                                {{ !empty($customer->name) ? $customer->name : '' }}<br>
+                                                {{ !empty($customer->email) ? $customer->email : '' }}<br>
+                                                @if(!empty($customer->billing_phone) || !empty($customer->phone))
+                                                    {{ !empty($customer->billing_phone) ? $customer->billing_phone : $customer->phone }}<br>
+                                                @endif
+                                                @if(!empty($customer->billing_address))
+                                                    {{ $customer->billing_address }}<br>
+                                                    {{ !empty($customer->billing_city) ? $customer->billing_city . ', ' : '' }}
+                                                    {{ !empty($customer->billing_state) ? $customer->billing_state . ', ' : '' }}
+                                                    {{ !empty($customer->billing_zip) ? $customer->billing_zip : '' }}<br>
+                                                    {{ !empty($customer->billing_country) ? $customer->billing_country : '' }}<br>
+                                                @endif
+                                                @if(!empty($customer->tax_number))
+                                                    <strong>{{__('Tax Number')}} : </strong>{{ $customer->tax_number }}
+                                                @endif
+                                            </small>
+                                        </div>
                                         @if (!empty($company_settings['proposal_qr_display']) && $company_settings['proposal_qr_display'] == 'on')
                                             <div class="col">
                                                 <div class="float-end mt-3">

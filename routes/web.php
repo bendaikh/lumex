@@ -26,6 +26,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\BonDeLivraisonController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\UserController;
@@ -276,6 +277,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('proposal/section/type', [ProposalController::class, 'ProposalSectionGet'])->name('proposal.section.type');
         Route::get('proposal/{id}/sent', [ProposalController::class, 'sent'])->name('proposal.sent');
         Route::get('proposal/stats/view', [ProposalController::class, 'ProposalQuickStats'])->name('proposal.stats.view');
+
+        // bon de livraison
+        Route::get('bon-de-livraison/pdf/{id}', [BonDeLivraisonController::class, 'bonDeLivraisonPdf'])->name('bon-de-livraison.pdf');
+        Route::get('bon-de-livraison/{id}/convert-from-proposal', [BonDeLivraisonController::class, 'convert'])->name('bon-de-livraison.convert');
+        Route::get('bon-de-livraison/{id}/status/change', [BonDeLivraisonController::class, 'statusChange'])->name('bon-de-livraison.status.change');
+        Route::post('/bon-de-livraison/template/setting', [BonDeLivraisonController::class, 'saveTemplateSettings'])->name('bon-de-livraison.template.setting');
+        Route::get('/bon-de-livraison/preview/{template}/{color}', [BonDeLivraisonController::class, 'previewBonDeLivraison'])->name('bon-de-livraison.preview');
+        Route::resource('bon-de-livraison', BonDeLivraisonController::class);
+        // end bon de livraison
 
         // purchase
         Route::resource('purchases', PurchaseController::class)->except(['create']);

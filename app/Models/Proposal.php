@@ -17,6 +17,8 @@ class Proposal extends Model
         'category_id',
         'is_convert',
         'converted_invoice_id',
+        'is_convert_bon_de_livraison',
+        'converted_bon_de_livraison_id',
         'workspace',
         'created_by',
     ];

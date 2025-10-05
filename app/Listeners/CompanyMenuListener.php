@@ -80,6 +80,19 @@ class CompanyMenuListener
         ]);
         $menu->add([
             'category' => 'Finance',
+            'title' => __('Delivery Note'),
+            'icon' => 'truck',
+            'name' => 'bon-de-livraison',
+            'parent' => '',
+            'order' => 175,
+            'ignore_if' => [],
+            'depend_on' => ['Account','Taskly'],
+            'route' => 'bon-de-livraison.index',
+            'module' => $module,
+            'permission' => 'proposal manage'
+        ]);
+        $menu->add([
+            'category' => 'Finance',
             'title' => __('Invoice'),
             'icon' => 'file-invoice',
             'name' => 'invoice',

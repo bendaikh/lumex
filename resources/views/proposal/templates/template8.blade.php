@@ -191,7 +191,12 @@
                         <td class="text-right">
                             <h3
                                 style="text-transform: uppercase; font-size: 40px; font-weight: bold; color: {{ $color }};">
-                                {{ __('PROPOSAL') }}</h3>
+                                @if(isset($is_bon_de_livraison) && $is_bon_de_livraison)
+                                    {{ __('DELIVERY NOTE') }}
+                                @else
+                                    {{ __('PROPOSAL') }}
+                                @endif
+                            </h3>
                         </td>
                     </tr>
                 </tbody>
@@ -241,7 +246,12 @@
                         <td style="width: 60%;">
                             <table class="no-space">
                                 <tbody>
-                                    @if ($settings['proposal_qr_display'] == 'on')
+                                    @php
+                                        $qr_display_setting = (isset($is_bon_de_livraison) && $is_bon_de_livraison) 
+                                            ? (isset($settings['bon_de_livraison_qr_display']) ? $settings['bon_de_livraison_qr_display'] : 'off')
+                                            : (isset($settings['proposal_qr_display']) ? $settings['proposal_qr_display'] : 'off');
+                                    @endphp
+                                    @if ($qr_display_setting == 'on')
                                         <tr>
                                             <td colspan="2">
                                                 <div class="view-qrcode" style="margin-top: 0; margin-bottom: 15px;">
@@ -286,68 +296,52 @@
             </table>
         </div>
         <div class="invoice-body">
-            <table>
+            <table style="margin-bottom: 20px;">
                 <tbody>
                     <tr>
-                        @if (!empty($customer->billing_name) && !empty($customer->billing_address) && !empty($customer->billing_zip))
-                            <td>
-                                <strong style="margin-bottom: 10px; display:block;">{{ __('Bill To') }}:</strong>
-                                <p>
-                                        {{ !empty($customer->billing_name) ? $customer->billing_name : '' }}<br>
-                                        {{ !empty($customer->billing_address) ? $customer->billing_address : '' }}<br>
-                                        {{ !empty($customer->billing_city) ? $customer->billing_city . ' ,' : '' }}
-                                        {{ !empty($customer->billing_state) ? $customer->billing_state . ' ,' : '' }}
-                                        {{ !empty($customer->billing_zip) ? $customer->billing_zip : '' }}<br>
-                                        {{ !empty($customer->billing_country) ? $customer->billing_country : '' }}<br>
-                                        {{ !empty($customer->billing_phone) ? $customer->billing_phone : '' }}<br>
-                                </p>
-                            </td>
-                        @endif
-                        @if ($settings['proposal_shipping_display'] == 'on')
-                            @if (!empty($customer->shipping_name) && !empty($customer->shipping_address) && !empty($customer->shipping_zip))
-                                <td class="text-right">
-                                    <strong style="margin-bottom: 10px; display:block;">{{ __('Ship To') }}:</strong>
-                                    <p>
-                                        {{ !empty($customer->shipping_name) ? $customer->shipping_name : '' }}<br>
-                                        {{ !empty($customer->shipping_address) ? $customer->shipping_address : '' }}<br>
-                                        {{ !empty($customer->shipping_city) ? $customer->shipping_city .' ,': '' }}
-                                        {{ !empty($customer->shipping_state) ? $customer->shipping_state .' ,': '' }}
-                                        {{ !empty($customer->shipping_zip) ? $customer->shipping_zip : '' }}<br>
-                                        {{ !empty($customer->shipping_country) ? $customer->shipping_country : '' }}<br>
-                                        {{ !empty($customer->shipping_phone) ? $customer->shipping_phone : '' }}<br>
-                                    </p>
-                                </td>
-                            @endif
-                        @endif
+                        <td>
+                            <strong style="margin-bottom: 10px; display:block;">{{ __('Client Information') }}:</strong>
+                            <p>
+                                {{ !empty($customer->name) ? $customer->name : '' }}<br>
+                                {{ !empty($customer->email) ? $customer->email : '' }}<br>
+                                @if(!empty($customer->billing_phone) || !empty($customer->phone))
+                                    {{ !empty($customer->billing_phone) ? $customer->billing_phone : $customer->phone }}<br>
+                                @endif
+                                @if(!empty($customer->billing_address))
+                                    {{ $customer->billing_address }}<br>
+                                    {{ !empty($customer->billing_city) ? $customer->billing_city . ', ' : '' }}
+                                    {{ !empty($customer->billing_state) ? $customer->billing_state . ', ' : '' }}
+                                    {{ !empty($customer->billing_zip) ? $customer->billing_zip : '' }}<br>
+                                    {{ !empty($customer->billing_country) ? $customer->billing_country : '' }}<br>
+                                @endif
+                                @if(!empty($customer->tax_number))
+                                    <strong>{{__('Tax Number')}} : </strong>{{ $customer->tax_number }}
+                                @endif
+                            </p>
+                        </td>
                     </tr>
                 </tbody>
             </table>
             <table class="add-border invoice-summary" style="margin-top: 30px;">
                 <thead style="background-color: var(--theme-color); color: {{ $font_color }};">
                     <tr>
-                         @if($proposal->proposal_module == "account")
-                            <th>{{__('Item Type')}}</th>
-                        @endif
                         <th>{{ __('Item') }}</th>
                         <th>{{ __('Quantity') }}</th>
                         <th>{{ __('Rate') }}</th>
                         <th>{{ __('Discount') }}</th>
                         <th>{{ __('Tax') }} (%)</th>
-                        <th>{{ __('Price') }}<small>{{ __('After discount & tax') }}</small></th>
+                        <th>{{ __('Total Price') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (isset($proposal->itemData) && count($proposal->itemData) > 0)
                         @foreach ($proposal->itemData as $key => $item)
                             <tr>
-                                 @if($proposal->proposal_module == "account")
-                                    <td>{{!empty($item->product_type) ? Str::ucfirst($item->product_type) : '--' }}</td>
-                                @endif
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->quantity }}</td>
                                 <td>{{ currency_format_with_sym($item->price, $proposal->created_by, $proposal->workspace) }}
                                 </td>
-                                <td>{{ $item->discount != 0 ? currency_format_with_sym($item->discount, $proposal->created_by, $proposal->workspace) : '-' }}
+                                <td>{{ $item->discount != 0 ? number_format($item->discount, 2) . '%' : '-' }}
                                 </td>
                                 <td>
                                     @if (!empty($item->itemTax))
@@ -386,9 +380,6 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        @if($proposal->proposal_module == "account")
-                            <td></td>
-                        @endif
                         <td>{{ __('Total') }}</td>
                         <td>{{ $proposal->totalQuantity }}</td>
                         <td>{{ currency_format_with_sym($proposal->totalRate, $proposal->created_by, $proposal->workspace) }}
@@ -403,9 +394,6 @@
                     <tr>
                         @php
                             $colspan = 4;
-                            if($proposal->proposal_module == "account"){
-                                $colspan = 5;
-                            }
                         @endphp
                         <td colspan="{{$colspan}}"></td>
                         <td colspan="2" class="sub-total">

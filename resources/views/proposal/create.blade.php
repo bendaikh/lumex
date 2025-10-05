@@ -67,7 +67,9 @@
                 discount = 0;
             }
 
-            var totalItemPrice = (quantity * price) - discount;
+            // Calculate discount as percentage
+            var discountAmount = (quantity * price) * (discount / 100);
+            var totalItemPrice = (quantity * price) - discountAmount;
 
             var amount = (totalItemPrice);
 
@@ -117,7 +119,9 @@
             if (discount.length <= 0) {
                 discount = 0;
             }
-            var totalItemPrice = (quantity * price) - discount;
+            // Calculate discount as percentage
+            var discountAmount = (quantity * price) * (discount / 100);
+            var totalItemPrice = (quantity * price) - discountAmount;
 
             var amount = (totalItemPrice);
 
@@ -167,7 +171,9 @@
 
             var price = $(el.find('.price')).val();
             var quantity = $(el.find('.quantity')).val();
-            var totalItemPrice = (quantity * price) - discount;
+            // Calculate discount as percentage
+            var discountAmount = (quantity * price) * (discount / 100);
+            var totalItemPrice = (quantity * price) - discountAmount;
 
 
             var amount = (totalItemPrice);
