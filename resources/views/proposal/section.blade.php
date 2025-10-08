@@ -101,20 +101,89 @@
             if (typeof value != 'undefined' && value.length != 0) {
                 value = JSON.parse(value);
                 $repeater.setList(value);
+                
+                // Pre-calculated items data to avoid AJAX calls
+                @if(isset($items) && count($items) > 0)
+                    var itemsData = @json($items);
+                    var itemsMap = {};
+                    itemsData.forEach(function(item) {
+                        itemsMap[item.product_id] = item;
+                    });
+                @endif
+                
                 for (var i = 0; i < value.length; i++)
                 {
                     var tr = $('#sortable-table .id[value="' + value[i].id + '"]').parent();
                     tr.find('.item').val(value[i].product_id);
-                    if (type == 'product')
+                    if (type == 'product' || type == 'parts')
                     {
                         var element = tr.find('.product_type');
                         var product_id = value[i].product_id;
-                        ProductType(element,product_id,'edit');
-                        changeItem(tr.find('.item'));
+                        ProductType(element, product_id, 'edit');
+                        
+                        // Use pre-loaded data instead of AJAX
+                        @if(isset($items) && count($items) > 0)
+                            if(itemsMap[product_id]) {
+                                populateItemData(tr.find('.item'), itemsMap[product_id], value[i]);
+                            } else {
+                                changeItem(tr.find('.item'));
+                            }
+                        @else
+                            changeItem(tr.find('.item'));
+                        @endif
                     }
                 }
             }
         });
+        
+        @if(isset($items) && count($items) > 0)
+        // New function to populate item data without AJAX - optimized for performance
+        function populateItemData(element, itemData, proposalItem) {
+            var el = element;
+            
+            // Set quantity, price, discount from proposal item
+            $(el.parent().parent().find('.quantity')).val(proposalItem.quantity);
+            $(el.parent().parent().find('.price')).val(proposalItem.price);
+            $(el.parent().parent().find('.discount')).val(proposalItem.discount);
+            $(el.parent().parent().parent().find('.pro_description')).val(proposalItem.description);
+            
+            // Build taxes display
+            var taxes = '';
+            var tax = [];
+            var totalItemTaxRate = 0;
+            
+            if (itemData.taxes && itemData.taxes.length > 0) {
+                for (var i = 0; i < itemData.taxes.length; i++) {
+                    taxes += '<span class="badge bg-primary p-2 px-3 rounded mt-1 mr-1 product_tax">' +
+                        itemData.taxes[i].name + ' ' + '(' + itemData.taxes[i].rate + '%)' +
+                        '</span>';
+                    tax.push(itemData.taxes[i].id);
+                    totalItemTaxRate += parseFloat(itemData.taxes[i].rate);
+                }
+            } else {
+                taxes = '-';
+            }
+            
+            // Calculate item tax price
+            var discountAmount = (proposalItem.quantity * proposalItem.price) * (proposalItem.discount / 100);
+            var totalItemPrice = (proposalItem.quantity * proposalItem.price) - discountAmount;
+            var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * totalItemPrice);
+            
+            $(el.parent().parent().find('.itemTaxRate')).val(totalItemTaxRate.toFixed(2));
+            $(el.parent().parent().find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
+            $(el.parent().parent().find('.taxes')).html(taxes);
+            $(el.parent().parent().find('.tax')).val(tax);
+            
+            // Set amount display
+            var amount = parseFloat(itemTaxPrice) + parseFloat(totalItemPrice);
+            $(el.parent().parent().find('.amount')).html(amount.toFixed(2));
+            
+            // Trigger calculation to update totals
+            setTimeout(function() {
+                $(".discount").trigger('change');
+            }, 100);
+        }
+        @endif
     </script>
     @if ($type == 'product')
         <script>

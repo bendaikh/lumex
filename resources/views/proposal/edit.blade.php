@@ -236,10 +236,8 @@
             var itemDiscountPriceInput = $('.discount');
 
             for (var k = 0; k < itemDiscountPriceInput.length; k++) {
-                if (itemDiscountPriceInput[k].value == '') {
-                    itemDiscountPriceInput[k].value = parseFloat(0);
-                }
-                totalItemDiscountPrice += parseFloat(itemDiscountPriceInput[k].value);
+                var discountValue = itemDiscountPriceInput[k].value == '' ? 0 : parseFloat(itemDiscountPriceInput[k].value);
+                totalItemDiscountPrice += discountValue;
             }
 
 
@@ -347,8 +345,8 @@
                             var itemDiscountPriceInput = $('.discount');
 
                             for (var k = 0; k < itemDiscountPriceInput.length; k++) {
-
-                                totalItemDiscountPrice += parseFloat(itemDiscountPriceInput[k].value);
+                                var discountValue = itemDiscountPriceInput[k].value == '' ? 0 : parseFloat(itemDiscountPriceInput[k].value);
+                                totalItemDiscountPrice += discountValue;
                             }
 
                             $('.subTotal').html(totalItemPrice.toFixed(2));
@@ -516,8 +514,8 @@
                             var itemDiscountPriceInput = $('.discount');
 
                             for (var k = 0; k < itemDiscountPriceInput.length; k++) {
-
-                                totalItemDiscountPrice += parseFloat(itemDiscountPriceInput[k].value);
+                                var discountValue = itemDiscountPriceInput[k].value == '' ? 0 : parseFloat(itemDiscountPriceInput[k].value);
+                                totalItemDiscountPrice += discountValue;
                             }
 
                             $('.subTotal').html(totalItemPrice.toFixed(2));

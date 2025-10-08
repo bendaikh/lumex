@@ -1479,9 +1479,20 @@ class ProposalController extends Controller
         $type = $request->type;
         $acction = $request->acction;
         $proposal = [];
+        $items = [];
+        
         if($acction == 'edit')
         {
             $proposal = Proposal::find($request->proposal_id);
+            
+            // Pre-calculate items data to avoid multiple AJAX calls
+            foreach ($proposal->items as $proposalItem)
+            {
+                $itemAmount               = $proposalItem->quantity * $proposalItem->price;
+                $proposalItem->itemAmount = $itemAmount;
+                $proposalItem->taxes      = Proposal::tax($proposalItem->tax);
+                $items[]                  = $proposalItem;
+            }
         }
 
         if($request->type == "product" && module_is_active('Account'))
@@ -1489,7 +1500,7 @@ class ProposalController extends Controller
             $product_services = \Workdo\ProductService\Entities\ProductService::where('workspace_id', getActiveWorkSpace())->get()->pluck('name', 'id');
             $product_services_count =$product_services->count();
             $product_type = ProductService::$product_type;
-            $returnHTML = view('proposal.section',compact('product_services','product_type','type' ,'acction','proposal','product_services_count'))->render();
+            $returnHTML = view('proposal.section',compact('product_services','product_type','type' ,'acction','proposal','product_services_count','items'))->render();
                 $response = [
                     'is_success' => true,
                     'message' => '',
@@ -1514,7 +1525,7 @@ class ProposalController extends Controller
                     $tasks->prepend('--', '');
                 }
             }
-            $returnHTML = view('proposal.section',compact('tasks','type' ,'acction','proposal'))->render();
+            $returnHTML = view('proposal.section',compact('tasks','type' ,'acction','proposal','items'))->render();
                 $response = [
                     'is_success' => true,
                     'message' => '',
@@ -1534,7 +1545,7 @@ class ProposalController extends Controller
             if (module_is_active('CMMS')) {
                 $product_type['parts'] = 'Parts';
             }
-            $returnHTML = view('proposal.section',compact('product_services','product_type','type' ,'acction','proposal','product_services_count'))->render();
+            $returnHTML = view('proposal.section',compact('product_services','product_type','type' ,'acction','proposal','product_services_count','items'))->render();
                 $response = [
                     'is_success' => true,
                     'message' => '',
