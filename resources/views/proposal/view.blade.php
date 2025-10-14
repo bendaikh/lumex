@@ -341,9 +341,11 @@
                                                                 $taxes= \App\Models\Proposal::tax($iteam->tax);
                                                                 $totalQuantity+=$iteam->quantity;
                                                                 $totalRate+=$iteam->price;
-                                                                $totalDiscount+=$iteam->discount;
+                                                                // Calculate discount as percentage of (price * quantity)
+                                                                $discountAmount = ($iteam->price * $iteam->quantity) * ($iteam->discount / 100);
+                                                                $totalDiscount+=$discountAmount;
                                                                 foreach($taxes as $taxe){
-                                                                    $taxDataPrice= \App\Models\Proposal::taxRate($taxe->rate,$iteam->price,$iteam->quantity,$iteam->discount);
+                                                                    $taxDataPrice= \App\Models\Proposal::taxRate($taxe->rate,$iteam->price,$iteam->quantity,$discountAmount);
                                                                     if (array_key_exists($taxe->name,$taxesData))
                                                                     {
                                                                         $taxesData[$taxe->name] = $taxesData[$taxe->name]+$taxDataPrice;

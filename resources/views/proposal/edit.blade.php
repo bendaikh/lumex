@@ -237,7 +237,11 @@
 
             for (var k = 0; k < itemDiscountPriceInput.length; k++) {
                 var discountValue = itemDiscountPriceInput[k].value == '' ? 0 : parseFloat(itemDiscountPriceInput[k].value);
-                totalItemDiscountPrice += discountValue;
+                var itemPrice = parseFloat(priceInput[k].value);
+                var itemQuantity = parseFloat(inputs_quantity[k].value);
+                // Calculate discount as percentage of (price * quantity)
+                var discountAmount = (itemPrice * itemQuantity) * (discountValue / 100);
+                totalItemDiscountPrice += discountAmount;
             }
 
 

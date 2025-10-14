@@ -77,7 +77,9 @@ class Proposal extends Model
         $totalDiscount = 0;
         foreach($this->items as $product)
         {
-            $totalDiscount += $product->discount;
+            // Calculate discount as percentage of (price * quantity)
+            $discountAmount = ($product->price * $product->quantity) * ($product->discount / 100);
+            $totalDiscount += $discountAmount;
         }
         return $totalDiscount;
     }
