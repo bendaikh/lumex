@@ -341,7 +341,7 @@
                                         <p>-</p>
                                     @endif
                                 </td>
-                                <td>{{ currency_format_with_sym($item->price * $item->quantity - $item->discount + (isset($item->tax_price) ? $item->tax_price : 0), $proposal->created_by, $proposal->workspace) }}
+                                <td>{{ currency_format_with_sym((($item->price * $item->quantity) * (1 - ($item->discount / 100))) + (isset($item->tax_price) ? $item->tax_price : 0), $proposal->created_by, $proposal->workspace) }}
                                 </td>
                                 @if ($item->description != null)
                             <tr class="border-0 itm-description ">
@@ -372,7 +372,7 @@
                         <td>{{ $proposal->totalQuantity }}</td>
                         <td>{{ currency_format_with_sym($proposal->totalRate, $proposal->created_by, $proposal->workspace) }}
                         </td>
-                        <td>{{ currency_format_with_sym($proposal->totalDiscount, $proposal->created_by, $proposal->workspace) }}
+                        <td>{{ currency_format_with_sym($proposal->getTotalDiscount(), $proposal->created_by, $proposal->workspace) }}
                         </td>
                         <td>{{ currency_format_with_sym($proposal->totalTaxPrice, $proposal->created_by, $proposal->workspace) }}
                         </td>

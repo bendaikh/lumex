@@ -181,7 +181,10 @@ class Invoice extends Model
     }
     public static function taxRate($taxRate, $price, $quantity,$discount = 0)
     {
-        return ($taxRate / 100) * (($price * $quantity) - $discount);
+        // discount is a percentage; apply it before tax
+        $base = ($price * $quantity);
+        $discountAmount = $base * ($discount / 100);
+        return ($taxRate / 100) * ($base - $discountAmount);
     }
     public static function tax($taxes)
     {
@@ -251,7 +254,11 @@ class Invoice extends Model
             {
                 $taxes = 0;
             }
-            $totalTax += ($taxes / 100) * (($product->price * $product->quantity) - $product->discount);
+            // Apply discount percentage first, then compute tax
+            $lineBase = ($product->price * $product->quantity);
+            $discountAmount = $lineBase * ($product->discount / 100);
+            $taxableAmount = $lineBase - $discountAmount;
+            $totalTax += ($taxes / 100) * $taxableAmount;
         }
 
         return $totalTax;

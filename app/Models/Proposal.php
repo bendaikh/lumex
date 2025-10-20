@@ -89,14 +89,21 @@ class Proposal extends Model
         foreach ($this->items as $product) {
             $taxes = Proposal::totalTaxRate($product->tax);
 
-            $totalTax += ($taxes / 100) * (($product->price * $product->quantity) - $product->discount);
+            // Apply discount as percentage of price*quantity, then apply tax on discounted base
+            $lineBase = ($product->price * $product->quantity);
+            $discountAmount = $lineBase * ($product->discount / 100);
+            $taxableAmount = $lineBase - $discountAmount;
+            $totalTax += ($taxes / 100) * $taxableAmount;
         }
 
         return $totalTax;
     }
     public static function taxRate($taxRate, $price, $quantity,$discount = 0)
     {
-        return ($taxRate / 100) * (($price * $quantity) - $discount);
+        // discount passed is treated as percentage
+        $base = ($price * $quantity);
+        $discountAmount = $base * ($discount / 100);
+        return ($taxRate / 100) * ($base - $discountAmount);
     }
     public static function tax($taxes)
     {

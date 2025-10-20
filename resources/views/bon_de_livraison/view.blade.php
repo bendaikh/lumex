@@ -55,7 +55,9 @@
                                                 <th class="text-dark">#</th>
                                                 <th class="text-dark">{{__('Item')}}</th>
                                                 <th class="text-dark">{{__('Quantity')}}</th>
-                                                <th class="text-dark">{{__('Price')}}</th>
+                                                <th class="text-dark">{{__('Rate')}}</th>
+                                                <th class="text-dark">{{__('Discount')}}</th>
+                                                <th class="text-dark">{{__('Tax')}}</th>
                                                 <th class="text-end text-dark">{{__('Total')}}</th>
                                             </tr>
                                             @foreach($iteams as $key =>$iteam)
@@ -64,7 +66,32 @@
                                                     <td>{{!empty($iteam->product())?$iteam->product()->name:''}}</td>
                                                     <td>{{$iteam->quantity}}</td>
                                                     <td>{{ currency_format_with_sym($iteam->price)}}</td>
-                                                    <td class="text-end">{{ currency_format_with_sym($iteam->price * $iteam->quantity)}}</td>
+                                                    <td>{{ $iteam->discount != 0 ? number_format($iteam->discount, 2) . '%' : '-' }}</td>
+                                                    <td>
+                                                        @php
+                                                            $taxes = \App\Models\BonDeLivraison::tax($iteam->tax);
+                                                            $lineBase = $iteam->price * $iteam->quantity;
+                                                            $discountAmount = $lineBase * ($iteam->discount / 100);
+                                                            $taxTotal = 0;
+                                                        @endphp
+                                                        @if(!empty($taxes))
+                                                            <table>
+                                                                @foreach($taxes as $tax)
+                                                                    @php
+                                                                        $taxPrice = \App\Models\BonDeLivraison::taxRate($tax->rate,$iteam->price,$iteam->quantity,$iteam->discount);
+                                                                        $taxTotal += $taxPrice;
+                                                                    @endphp
+                                                                    <tr>
+                                                                        <td>{{$tax->name}} ({{$tax->rate}}%)</td>
+                                                                        <td>{{ currency_format_with_sym($taxPrice) }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </table>
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-end">{{ currency_format_with_sym((($iteam->price * $iteam->quantity) * (1 - ($iteam->discount/100))) + $taxTotal)}}</td>
                                                 </tr>
                                             @endforeach
                                         </table>

@@ -191,7 +191,8 @@
                                                         $discountAmount = ($iteam->price * $iteam->quantity) * ($iteam->discount / 100);
                                                         $totalDiscount+=$discountAmount;
                                                         foreach($taxes as $taxe){
-                                                            $taxDataPrice=\App\Models\Proposal::taxRate($taxe->rate,$iteam->price,$iteam->quantity,$discountAmount);
+                                                            // Pass discount as percentage to taxRate
+                                                            $taxDataPrice=\App\Models\Proposal::taxRate($taxe->rate,$iteam->price,$iteam->quantity,$iteam->discount);
                                                             if (array_key_exists($taxe->name,$taxesData))
                                                             {
                                                                 $taxesData[$taxe->name] = $taxesData[$taxe->name]+$taxDataPrice;
@@ -214,9 +215,7 @@
                                                     @endif
                                                     <td>{{$iteam->quantity}}</td>
                                                     <td>{{currency_format_with_sym($iteam->price,$proposal->created_by,$proposal->workspace)}}</td>
-                                                    <td>
-                                                        {{currency_format_with_sym($iteam->discount,$proposal->created_by,$proposal->workspace)}}
-                                                    </td>
+                                                    <td>{{ $iteam->discount != 0 ? number_format($iteam->discount, 2) . '%' : '-' }}</td>
                                                     <td>
                                                         @if(!empty($iteam->tax))
                                                             <table>
@@ -248,7 +247,7 @@
                                                         $tr_tex = (array_key_exists($key,$TaxPrice_array) == true) ? $TaxPrice_array[$key] : 0;
                                                     @endphp
                                                     <td style="white-space: break-spaces;">{{!empty($iteam->description)?$iteam->description:'-'}}</td>
-                                                    <td class="text-end">{{ currency_format_with_sym(($iteam->price*$iteam->quantity) -$iteam->discount + $tr_tex ,$proposal->created_by,$proposal->workspace)}}</td>
+                                                    <td class="text-end">{{ currency_format_with_sym((($iteam->price*$iteam->quantity)*(1 - ($iteam->discount/100))) + $tr_tex ,$proposal->created_by,$proposal->workspace)}}</td>
                                                 </tr>
                                             @endforeach
                                             <tfoot>

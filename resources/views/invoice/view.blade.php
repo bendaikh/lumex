@@ -728,9 +728,7 @@
 
                                                             <td>{{ currency_format_with_sym($iteam->price) }}</td>
                                                             @if($invoice->invoice_module != 'Fleet' )
-                                                            <td>
-                                                                {{ currency_format_with_sym($iteam->discount) }}
-                                                            </td>
+                                                            <td>{{ $iteam->discount != 0 ? number_format($iteam->discount, 2) . '%' : '-' }}</td>
                                                             <td>
                                                                 @if (!empty($iteam->tax))
                                                                     <table>
@@ -785,7 +783,7 @@
                                                                     @endphp
                                                                     {{ currency_format_with_sym($price) }}
                                                                 @else
-                                                                    {{ currency_format_with_sym($iteam->price * $iteam->quantity - $iteam->discount + $tr_tex) }}
+                                                                    {{ currency_format_with_sym((($iteam->price * $iteam->quantity) * (1 - ($iteam->discount / 100))) + $tr_tex) }}
                                                                 @endif
                                                             </td>
                                                         </tr>

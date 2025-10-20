@@ -114,7 +114,10 @@ class AccountUtility extends Model
 
     public static function taxRate($taxRate, $price, $quantity, $discount = 0)
     {
-        return (($price * $quantity) - $discount) * ($taxRate / 100);
+        // discount is a percentage; apply it to price*quantity before tax
+        $base = ($price * $quantity);
+        $discountAmount = $base * ($discount / 100);
+        return ($base - $discountAmount) * ($taxRate / 100);
     }
 
     public static function totalTaxRate($taxes)

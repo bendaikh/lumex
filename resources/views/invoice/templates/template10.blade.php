@@ -402,7 +402,7 @@
                             <th>{{ $item->description }}</th>
                         @endif
                         @if ($invoice->invoice_module != 'Fleet')
-                            <td>{{ $item->discount != 0 ? currency_format_with_sym($item->discount, $invoice->created_by, $invoice->workspace) : '-' }}
+                            <td>{{ $item->discount != 0 ? number_format($item->discount, 2) . '%' : '-' }}
                             </td>
                             <td>
                                 @if (!empty($item->itemTax))
@@ -424,7 +424,7 @@
                             @endphp
                             <td>{{ currency_format_with_sym($price, $invoice->created_by, $invoice->workspace) }}</td>
                         @else
-                            <td>{{ currency_format_with_sym($item->price * $item->quantity - $item->discount + (isset($item->tax_price) ? $item->tax_price : 0), $invoice->created_by, $invoice->workspace) }}
+                            <td>{{ currency_format_with_sym((($item->price * $item->quantity) * (1 - ($item->discount / 100))) + (isset($item->tax_price) ? $item->tax_price : 0), $invoice->created_by, $invoice->workspace) }}
                             </td>
                         @endif
                         @if ($invoice->invoice_module != 'Fleet')
@@ -467,7 +467,7 @@
 
                             <td>{{ currency_format_with_sym($invoice->totalRate, $invoice->created_by, $invoice->workspace) }}
                             </td>
-                            <td>{{ currency_format_with_sym($invoice->totalDiscount, $invoice->created_by, $invoice->workspace) }}
+                            <td>{{ currency_format_with_sym($invoice->getTotalDiscount(), $invoice->created_by, $invoice->workspace) }}
                             </td>
                             <td>{{ currency_format_with_sym($invoice->totalTaxPrice, $invoice->created_by, $invoice->workspace) }}
                             </td>
