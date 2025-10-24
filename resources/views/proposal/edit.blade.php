@@ -102,7 +102,7 @@
             var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
             $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
 
-            $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
+            $(el.find('.amount')).html((parseFloat(itemTaxPrice) + parseFloat(amount)).toFixed(2));
 
             var totalItemTaxPrice = 0;
             var itemTaxPriceInput = $('.itemTaxPrice');
@@ -154,7 +154,7 @@
             var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
             $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
 
-            $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
+            $(el.find('.amount')).html((parseFloat(itemTaxPrice) + parseFloat(amount)).toFixed(2));
 
             var totalItemTaxPrice = 0;
             var itemTaxPriceInput = $('.itemTaxPrice');
@@ -207,7 +207,7 @@
             var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
             $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
 
-            $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
+            $(el.find('.amount')).html((parseFloat(itemTaxPrice) + parseFloat(amount)).toFixed(2));
 
             var totalItemTaxPrice = 0;
             var itemTaxPriceInput = $('.itemTaxPrice');
@@ -338,8 +338,8 @@
                             for (var j = 0; j < itemTaxPriceInput.length; j++) {
                                 totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
                                 if (item.product != null) {
-                                    $(el.parent().parent().find('.amount')).html(parseFloat(item.totalAmount) +
-                                        parseFloat(itemTaxPriceInput[j].value));
+                                    $(el.parent().parent().find('.amount')).html((parseFloat(item.totalAmount) +
+                                        parseFloat(itemTaxPriceInput[j].value)).toFixed(2));
                                 }
                             }
 
@@ -507,8 +507,8 @@
                             for (var j = 0; j < itemTaxPriceInput.length; j++) {
                                 totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
                                 if (item.product != null) {
-                                    $(el.parent().parent().find('.amount')).html(parseFloat(item.totalAmount) +
-                                        parseFloat(itemTaxPriceInput[j].value));
+                                    $(el.parent().parent().find('.amount')).html((parseFloat(item.totalAmount) +
+                                        parseFloat(itemTaxPriceInput[j].value)).toFixed(2));
                                 }
                             }
 
