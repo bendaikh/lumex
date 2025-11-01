@@ -292,22 +292,22 @@
         /* Adjust column widths for better fit */
         .items-table th:nth-child(1),
         .items-table td:nth-child(1) {
-            width: 50px; /* Image column */
+            width: auto; /* Item column - takes remaining space */
         }
 
         .items-table th:nth-child(2),
         .items-table td:nth-child(2) {
-            width: auto; /* Description column - takes remaining space */
+            width: 60px; /* Quantity column */
         }
 
         .items-table th:nth-child(3),
         .items-table td:nth-child(3) {
-            width: 60px; /* Quantity column */
+            width: 90px; /* Price column */
         }
 
         .items-table th:nth-child(4),
         .items-table td:nth-child(4) {
-            width: 90px; /* Price column */
+            width: 90px; /* Discount column */
         }
 
         .items-table th:nth-child(5),
@@ -491,7 +491,6 @@
             <table class="add-border invoice-summary items-table" style="margin-top: 15px;">
                 <thead style="background-color: var(--theme-color);color: {{ $font_color }};">
                     <tr>
-                        <th>{{ __('Image') }}</th>
                         <th>{{ __('Item') }}</th>
                         <th>{{ __('Quantity') }}</th>
                         <th>{{ __('Rate') }}</th>
@@ -504,22 +503,6 @@
                     @if (isset($proposal->itemData) && count($proposal->itemData) > 0)
                         @foreach ($proposal->itemData as $key => $item)
                             <tr class="no-page-break" style="page-break-inside: avoid;">
-                                <td>
-                                    @php
-                                        $product_image = null;
-                                        if (!empty($item->product_id)) {
-                                            $product = \Workdo\ProductService\Entities\ProductService::find($item->product_id);
-                                            if ($product && !empty($product->image)) {
-                                                $product_image = get_file($product->image);
-                                            }
-                                        }
-                                    @endphp
-                                    @if($product_image)
-                                        <img src="{{ $product_image }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="Product">
-                                    @else
-                                        <div style="width: 50px; height: 50px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-size: 10px;">N/A</div>
-                                    @endif
-                                </td>
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->quantity }}</td>
                                 <td>{{ currency_format_with_sym($item->price, $proposal->created_by, $proposal->workspace) }}
@@ -541,13 +524,12 @@
                             </tr>
                             @if ($item->description != null)
                             <tr class="border-0 itm-description no-page-break" style="page-break-inside: avoid; page-break-before: avoid;">
-                                <td colspan="7">{{ $item->description }} </td>
+                                <td colspan="6">{{ $item->description }} </td>
                             </tr>
                             @endif
                         @endforeach
                     @else
                         <tr>
-                            <td>-</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -559,13 +541,12 @@
                             <td>-</td>
                         </tr>
                         <tr class="border-0 itm-description">
-                            <td colspan="7">-</td>
+                            <td colspan="6">-</td>
                         </tr>
                     @endif
                 </tbody>
                 <tfoot class="no-page-break">
                     <tr>
-                        <td></td>
                         <td>{{ __('Total') }}</td>
                         <td>{{ $proposal->totalQuantity }}</td>
                         <td>{{ currency_format_with_sym($proposal->totalRate, $proposal->created_by, $proposal->workspace) }}
@@ -579,7 +560,7 @@
                     </tr>
                     <tr>
                         @php
-                            $colspan = 5; // Add one for image column
+                            $colspan = 4;
                         @endphp
                         <td colspan="{{$colspan}}"></td>
                         <td colspan="2" class="sub-total">
