@@ -331,6 +331,7 @@ class BonDeLivraisonController extends Controller
         // Bon de Livraison settings
         $settings['bon_de_livraison_footer_title']   = 'Footer Title';
         $settings['bon_de_livraison_footer_notes']   = 'Footer Notes';
+        $settings['bon_de_livraison_footer_text']    = 'Your Company Name - Address - Phone - Registration Numbers - Tax Numbers';
         $settings['bon_de_livraison_shipping_display'] = 'on';
         $settings['bon_de_livraison_template'] = $template;
         $settings['bon_de_livraison_color']    = $color;
@@ -348,6 +349,11 @@ class BonDeLivraisonController extends Controller
         $proposal = $bonDeLivraison;
         $logo = $img;
         $is_bon_de_livraison = true; // Flag to indicate this is a delivery note
+        
+        // Check if the template view exists, if not use template7 as fallback
+        if (!view()->exists('proposal.templates.' . $template)) {
+            $template = 'template7';
+        }
         
         return view('proposal.templates.' . $template, compact('proposal', 'customer', 'items', 'totalTaxPrice', 'taxesData', 'settings', 'img', 'color', 'logo', 'font_color', 'preview', 'customFields', 'is_bon_de_livraison'));
     }
@@ -470,7 +476,7 @@ class BonDeLivraisonController extends Controller
                 $bon_de_livraison_template = $bonDeLivraison->bon_de_livraison_template;
             }
             else{
-                $bon_de_livraison_template = (!empty($company_settings['bon_de_livraison_template']) ? $company_settings['bon_de_livraison_template'] : 'template1');
+                $bon_de_livraison_template = (!empty($company_settings['bon_de_livraison_template']) ? $company_settings['bon_de_livraison_template'] : 'template7');
             }
 
             $settings['site_rtl'] = isset($company_settings['site_rtl']) ? $company_settings['site_rtl'] : '';
@@ -487,6 +493,19 @@ class BonDeLivraisonController extends Controller
             $settings['vat_number'] = isset($company_settings['vat_number']) ? $company_settings['vat_number'] : '';
             $settings['bon_de_livraison_footer_title'] = isset($company_settings['bon_de_livraison_footer_title']) ? $company_settings['bon_de_livraison_footer_title'] : '';
             $settings['bon_de_livraison_footer_notes'] = isset($company_settings['bon_de_livraison_footer_notes']) ? $company_settings['bon_de_livraison_footer_notes'] : '';
+            
+            // Build default footer text only with fields that have values
+            if (isset($company_settings['bon_de_livraison_footer_text']) && !empty($company_settings['bon_de_livraison_footer_text'])) {
+                $settings['bon_de_livraison_footer_text'] = $company_settings['bon_de_livraison_footer_text'];
+            } else {
+                $footer_parts = [];
+                if (!empty($settings['company_name'])) $footer_parts[] = $settings['company_name'];
+                if (!empty($settings['company_address'])) $footer_parts[] = $settings['company_address'];
+                if (!empty($settings['company_telephone'])) $footer_parts[] = $settings['company_telephone'];
+                if (!empty($settings['registration_number'])) $footer_parts[] = 'RC: ' . $settings['registration_number'];
+                if (!empty($settings['tax_type']) && !empty($settings['vat_number'])) $footer_parts[] = $settings['tax_type'] . ': ' . $settings['vat_number'];
+                $settings['bon_de_livraison_footer_text'] = !empty($footer_parts) ? implode(' - ', $footer_parts) : '';
+            }
             $settings['bon_de_livraison_shipping_display'] = isset($company_settings['bon_de_livraison_shipping_display']) ? $company_settings['bon_de_livraison_shipping_display'] : '';
             $settings['bon_de_livraison_template'] = isset($company_settings['bon_de_livraison_template']) ? $company_settings['bon_de_livraison_template'] : '';
             $settings['bon_de_livraison_color'] = isset($company_settings['bon_de_livraison_color']) ? $company_settings['bon_de_livraison_color'] : '';
@@ -495,6 +514,7 @@ class BonDeLivraisonController extends Controller
             // Add proposal settings for template compatibility
             $settings['proposal_footer_title'] = $settings['bon_de_livraison_footer_title'];
             $settings['proposal_footer_notes'] = $settings['bon_de_livraison_footer_notes'];
+            $settings['proposal_footer_text'] = $settings['bon_de_livraison_footer_text'];
             $settings['proposal_shipping_display'] = $settings['bon_de_livraison_shipping_display'];
             $settings['proposal_qr_display'] = $settings['bon_de_livraison_qr_display'];
             $settings['proposal_template'] = $settings['bon_de_livraison_template'];
@@ -505,6 +525,11 @@ class BonDeLivraisonController extends Controller
             $proposal->proposal_id = $bonDeLivraison->bon_de_livraison_id;
             $proposal->proposal_module = $bonDeLivraison->bon_de_livraison_module;
             $is_bon_de_livraison = true;
+
+            // Check if the template view exists, if not use template7 as fallback
+            if (!view()->exists('proposal.templates.' . $bon_de_livraison_template)) {
+                $bon_de_livraison_template = 'template7';
+            }
 
             return view('proposal.templates.' . $bon_de_livraison_template, compact('proposal', 'color', 'settings', 'customer', 'img', 'font_color', 'customFields', 'is_bon_de_livraison'));
         } else {

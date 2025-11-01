@@ -754,10 +754,9 @@
                                         <label for="proposal_template"
                                             class="form-label">{{ __('Template') }}</label>
                                         <select class="form-control" name="proposal_template" id="proposal_template">
-                                            <option value="">{{ __('Select Template') }}</option>
                                             @foreach (templateData()['templates'] as $key => $template)
                                                 <option value="{{ $key }}"
-                                                    {{ $proposal->proposal_template == $key ? 'selected' : '' }}>
+                                                    {{ (($proposal->proposal_template ?? 'template7') == $key) ? 'selected' : '' }}>
                                                     {{ $template }}</option>
                                             @endforeach
                                         </select>

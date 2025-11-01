@@ -1719,16 +1719,7 @@ if (!function_exists('templateData')) {
             '000',
         ];
         $arr['templates'] = [
-            "template1" => "New York",
-            "template2" => "Toronto",
-            "template3" => "Rio",
-            "template4" => "London",
-            "template5" => "Istanbul",
-            "template6" => "Mumbai",
             "template7" => "Hong Kong",
-            "template8" => "Tokyo",
-            "template9" => "Sydney",
-            "template10" => "Paris",
         ];
         return $arr;
     }

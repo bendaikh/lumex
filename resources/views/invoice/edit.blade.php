@@ -100,10 +100,9 @@
                                     <div class="form-group">
                                         <label for="invoice_template" class="form-label">{{ __('Template') }}</label>
                                         <select class="form-control" name="invoice_template" id="invoice_template">
-                                            <option value="">{{ __('Select Template') }}</option>
                                             @foreach (templateData()['templates'] as $key => $template)
                                                 <option value="{{ $key }}"
-                                                    {{ $invoice->invoice_template == $key ? 'selected' : '' }}>
+                                                    {{ (($invoice->invoice_template ?? 'template7') == $key) ? 'selected' : '' }}>
                                                     {{ $template }}</option>
                                             @endforeach
                                         </select>

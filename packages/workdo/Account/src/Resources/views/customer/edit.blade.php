@@ -31,6 +31,14 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="form-group">
+                {{Form::label('ice',__('ICE'),['class'=>'form-label'])}}
+                <div class="form-icon-user">
+                    {{Form::text('ice',null,array('class'=>'form-control','placeholder' => __('Enter ICE')))}}
+                </div>
+            </div>
+        </div>
         @stack('electronic_address')
         @if (module_is_active('CustomField') && !$customFields->isEmpty())
             <div class="col-md-12">

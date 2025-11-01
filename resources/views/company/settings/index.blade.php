@@ -652,6 +652,13 @@
                                         {{ Form::textarea('proposal_footer_notes', isset($settings['proposal_footer_notes']) ? $settings['proposal_footer_notes'] : '', ['class' => 'form-control', 'rows' => '1', 'placeholder' => 'Enter Footer Notes']) }}
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {{ Form::label('proposal_footer_text', __('Footer Legal Text'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('proposal_footer_text', isset($settings['proposal_footer_text']) ? $settings['proposal_footer_text'] : 'Your Company Name - Address - Phone - Registration Numbers - Tax Numbers', ['class' => 'form-control', 'rows' => '2', 'placeholder' => 'Enter comprehensive footer text with legal information']) }}
+                                        <small class="text-muted">{{ __('This text will appear at the bottom of the proposal template as legal/contact information') }}</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -707,12 +714,17 @@
                                                 <div class=" bg-primary "> <i
                                                         class="ti ti-upload px-1"></i>{{ __('Choose file here') }}
                                                 </div>
-                                                <img id="blah12" class="mt-3" src="" width="70%" />
+                                                @php
+                                                    $proposal_logo = isset($settings['proposal_logo']) ? $settings['proposal_logo'] : '';
+                                                    $proposal_logo_url = !empty($proposal_logo) ? get_file($proposal_logo) : '';
+                                                @endphp
+                                                <img id="blah12" class="mt-3" src="{{ $proposal_logo_url }}" width="70%" style="{{!empty($proposal_logo_url) ? '' : 'display:none;'}}" />
                                                 <input type="file" class="form-control file" name="proposal_logo"
                                                     id="proposal_logo" data-filename="proposal_logo_update"
-                                                    onchange="document.getElementById('blah12').src = window.URL.createObjectURL(this.files[0])">
+                                                    onchange="document.getElementById('blah12').src = window.URL.createObjectURL(this.files[0]); document.getElementById('blah12').style.display = 'block';">
                                             </label>
                                         </div>
+                                        <small class="text-muted">{{ __('If no logo is uploaded, the system will use the default company logo') }}</small>
                                     </div>
                                     <div class="form-group mt-2 text-end">
                                         <input type="submit" value="{{ __('Save Changes') }}"
@@ -726,7 +738,7 @@
                                         src="{{ route('proposal.preview', [$proposal_template, $proposal_color]) }}"></iframe>
                                 @else
                                     <iframe id="proposal_frame" class="w-100 h-100" frameborder="0"
-                                        src="{{ route('proposal.preview', ['template1', 'fffff']) }}"></iframe>
+                                        src="{{ route('proposal.preview', ['template7', 'fffff']) }}"></iframe>
                                 @endif
                             </div>
                         </div>
@@ -775,6 +787,13 @@
                                     <div class="form-group">
                                         {{ Form::label('bon_de_livraison_footer_notes', __('Footer Notes'), ['class' => 'form-label']) }}
                                         {{ Form::textarea('bon_de_livraison_footer_notes', isset($settings['bon_de_livraison_footer_notes']) ? $settings['bon_de_livraison_footer_notes'] : '', ['class' => 'form-control', 'rows' => '1', 'placeholder' => 'Enter Footer Notes']) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {{ Form::label('bon_de_livraison_footer_text', __('Footer Legal Text'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('bon_de_livraison_footer_text', isset($settings['bon_de_livraison_footer_text']) ? $settings['bon_de_livraison_footer_text'] : 'Your Company Name - Address - Phone - Registration Numbers - Tax Numbers', ['class' => 'form-control', 'rows' => '2', 'placeholder' => 'Enter comprehensive footer text with legal information']) }}
+                                        <small class="text-muted">{{ __('This text will appear at the bottom of the delivery note template as legal/contact information') }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -832,12 +851,17 @@
                                                 <div class=" bg-primary "> <i
                                                         class="ti ti-upload px-1"></i>{{ __('Choose file here') }}
                                                 </div>
-                                                <img id="blah13" class="mt-3" src="" width="70%" />
+                                                @php
+                                                    $bon_de_livraison_logo = isset($settings['bon_de_livraison_logo']) ? $settings['bon_de_livraison_logo'] : '';
+                                                    $bon_de_livraison_logo_url = !empty($bon_de_livraison_logo) ? get_file($bon_de_livraison_logo) : '';
+                                                @endphp
+                                                <img id="blah13" class="mt-3" src="{{ $bon_de_livraison_logo_url }}" width="70%" style="{{!empty($bon_de_livraison_logo_url) ? '' : 'display:none;'}}" />
                                                 <input type="file" class="form-control file" name="bon_de_livraison_logo"
                                                     id="bon_de_livraison_logo" data-filename="bon_de_livraison_logo_update"
-                                                    onchange="document.getElementById('blah13').src = window.URL.createObjectURL(this.files[0])">
+                                                    onchange="document.getElementById('blah13').src = window.URL.createObjectURL(this.files[0]); document.getElementById('blah13').style.display = 'block';">
                                             </label>
                                         </div>
+                                        <small class="text-muted">{{ __('If no logo is uploaded, the system will use the default company logo') }}</small>
                                     </div>
                                     <div class="form-group mt-2 text-end">
                                         <input type="submit" value="{{ __('Save Changes') }}"
@@ -851,7 +875,7 @@
                                         src="{{ route('bon-de-livraison.preview', [$bon_de_livraison_template, $bon_de_livraison_color]) }}"></iframe>
                                 @else
                                     <iframe id="bon_de_livraison_frame" class="w-100 h-100" frameborder="0"
-                                        src="{{ route('bon-de-livraison.preview', ['template1', 'fffff']) }}"></iframe>
+                                        src="{{ route('bon-de-livraison.preview', ['template7', 'fffff']) }}"></iframe>
                                 @endif
                             </div>
                         </div>
@@ -901,7 +925,13 @@
                                     {{ Form::textarea('invoice_footer_notes', isset($settings['invoice_footer_notes']) ? $settings['invoice_footer_notes'] : '', ['class' => 'form-control', 'rows' => '1', 'placeholder' => 'Enter Footer Notes']) }}
                                 </div>
                             </div>
-                            
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    {{ Form::label('invoice_footer_text', __('Footer Legal Text'), ['class' => 'form-label']) }}
+                                    {{ Form::textarea('invoice_footer_text', isset($settings['invoice_footer_text']) ? $settings['invoice_footer_text'] : 'Your Company Name - Address - Phone - Registration Numbers - Tax Numbers', ['class' => 'form-control', 'rows' => '2', 'placeholder' => 'Enter comprehensive footer text with legal information']) }}
+                                    <small class="text-muted">{{ __('This text will appear at the bottom of the invoice template as legal/contact information') }}</small>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -958,12 +988,17 @@
                                             <div class=" bg-primary "> <i
                                                     class="ti ti-upload px-1"></i>{{ __('Choose file here') }}
                                             </div>
-                                            <img id="blah6" class="mt-3" src="" width="70%" />
+                                            @php
+                                                $invoice_logo = isset($settings['invoice_logo']) ? $settings['invoice_logo'] : '';
+                                                $invoice_logo_url = !empty($invoice_logo) ? get_file($invoice_logo) : '';
+                                            @endphp
+                                            <img id="blah6" class="mt-3" src="{{ $invoice_logo_url }}" width="70%" style="{{!empty($invoice_logo_url) ? '' : 'display:none;'}}" />
                                             <input type="file" class="form-control file" name="invoice_logo"
                                                 id="invoice_logo" data-filename="invoice_logo_update"
-                                                onchange="document.getElementById('blah6').src = window.URL.createObjectURL(this.files[0])">
+                                                onchange="document.getElementById('blah6').src = window.URL.createObjectURL(this.files[0]); document.getElementById('blah6').style.display = 'block';">
                                         </label>
                                     </div>
+                                    <small class="text-muted">{{ __('If no logo is uploaded, the system will use the default company logo') }}</small>
                                 </div>
                                 <div class="form-group mt-2 text-end">
                                     <input type="submit" value="{{ __('Save Changes') }}"
@@ -977,7 +1012,7 @@
                                     src="{{ route('invoice.preview', [$invoice_template, $invoice_color]) }}"></iframe>
                             @else
                                 <iframe id="invoice_frame" class="w-100 h-100" frameborder="0"
-                                    src="{{ route('invoice.preview', ['template1', 'fffff']) }}"></iframe>
+                                    src="{{ route('invoice.preview', ['template7', 'fffff']) }}"></iframe>
                             @endif
                         </div>
                     </div>
@@ -1101,7 +1136,7 @@
                                     src="{{ route('purchases.preview', [$purchase_template, $purchase_color]) }}"></iframe>
                             @else
                                 <iframe id="purchase_frame" class="w-100 h-100" frameborder="0"
-                                    src="{{ route('purchases.preview', ['template1', 'fffff']) }}"></iframe>
+                                    src="{{ route('purchases.preview', ['template7', 'fffff']) }}"></iframe>
                             @endif
                         </div>
                     </div>

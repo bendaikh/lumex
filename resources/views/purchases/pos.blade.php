@@ -73,7 +73,7 @@
                                     @if(isset($company_settings['purchase_template']) && isset($company_settings['purchase_color']) && !empty( $company_settings['purchase_template']) && !empty($company_settings['purchase_color']))
                                         <iframe id="purchase_frame" class="w-100 h-100" frameborder="0" src="{{route('purchase.preview',[$company_settings['purchase_template'], $company_settings['purchase_color']])}}"></iframe>
                                     @else
-                                        <iframe id="purchase_frame" class="w-100 h-100" frameborder="0" src="{{route('purchase.preview',['template1','fffff'])}}"></iframe>
+                                        <iframe id="purchase_frame" class="w-100 h-100" frameborder="0" src="{{route('purchase.preview',['template7','fffff'])}}"></iframe>
                                     @endif
                                 </div>
                             </div>

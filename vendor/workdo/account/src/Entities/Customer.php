@@ -17,6 +17,7 @@ class Customer extends Model
         'name',
         'email',
         'tax_number',
+        'ice',
         'password',
         'contact',
         'billing_name',

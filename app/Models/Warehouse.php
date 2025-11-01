@@ -30,8 +30,8 @@ class Warehouse extends Model
             "purchase_prefix" => "#PUR",
             "pos_prefix" => "#POS",
             "low_product_stock_threshold" => "1",
-            "purchase_template" => "template1",
-            "pos_template" => "template1",
+            "purchase_template" => "template7",
+            "pos_template" => "template7",
         ];
         $default_warehouses = [
             0=>[

@@ -895,7 +895,7 @@ class InvoiceController extends Controller
             if (!empty($invoice->invoice_template)) {
                 $invoice_template = $invoice->invoice_template;
             } else {
-                $invoice_template  = (!empty($company_settings['invoice_template']) ? $company_settings['invoice_template'] : 'template1');
+                $invoice_template  = (!empty($company_settings['invoice_template']) ? $company_settings['invoice_template'] : 'template7');
             }
             $settings['site_rtl'] = isset($company_settings['site_rtl']) ? $company_settings['site_rtl'] : '';
             $settings['company_name'] = isset($company_settings['company_name']) ? $company_settings['company_name'] : '';
@@ -911,10 +911,28 @@ class InvoiceController extends Controller
             $settings['vat_number'] = isset($company_settings['vat_number']) ? $company_settings['vat_number'] : '';
             $settings['footer_title'] = isset($company_settings['invoice_footer_title']) ? $company_settings['invoice_footer_title'] : '';
             $settings['footer_notes'] = isset($company_settings['invoice_footer_notes']) ? $company_settings['invoice_footer_notes'] : '';
+            
+            // Build default footer text only with fields that have values
+            if (isset($company_settings['invoice_footer_text']) && !empty($company_settings['invoice_footer_text'])) {
+                $settings['footer_text'] = $company_settings['invoice_footer_text'];
+            } else {
+                $footer_parts = [];
+                if (!empty($settings['company_name'])) $footer_parts[] = $settings['company_name'];
+                if (!empty($settings['company_address'])) $footer_parts[] = $settings['company_address'];
+                if (!empty($settings['company_telephone'])) $footer_parts[] = $settings['company_telephone'];
+                if (!empty($settings['registration_number'])) $footer_parts[] = 'RC: ' . $settings['registration_number'];
+                if (!empty($settings['tax_type']) && !empty($settings['vat_number'])) $footer_parts[] = $settings['tax_type'] . ': ' . $settings['vat_number'];
+                $settings['footer_text'] = !empty($footer_parts) ? implode(' - ', $footer_parts) : '';
+            }
             $settings['shipping_display'] = isset($company_settings['invoice_shipping_display']) ? $company_settings['invoice_shipping_display'] : '';
             $settings['invoice_template'] = isset($company_settings['invoice_template']) ? $company_settings['invoice_template'] : '';
             $settings['invoice_color'] = isset($company_settings['invoice_color']) ? $company_settings['invoice_color'] : '';
             $settings['invoice_qr_display'] = isset($company_settings['invoice_qr_display']) ? $company_settings['invoice_qr_display'] : '';
+
+            // Check if the template view exists, if not use template7 as fallback
+            if (!view()->exists('invoice.templates.' . $invoice_template)) {
+                $invoice_template = 'template7';
+            }
 
             return view('invoice.templates.' . $invoice_template, compact('invoice', 'commonCustomer','color', 'settings', 'customer', 'img', 'font_color', 'customFields', 'bank_details', 'bank_details_list'));
         } else {
@@ -1148,10 +1166,28 @@ class InvoiceController extends Controller
         $settings['vat_number'] = isset($company_settings['vat_number']) ? $company_settings['vat_number'] : '';
         $settings['footer_title'] = isset($company_settings['invoice_footer_title']) ? $company_settings['invoice_footer_title'] : '';
         $settings['footer_notes'] = isset($company_settings['invoice_footer_notes']) ? $company_settings['invoice_footer_notes'] : '';
+        
+        // Build default footer text only with fields that have values
+        if (isset($company_settings['invoice_footer_text']) && !empty($company_settings['invoice_footer_text'])) {
+            $settings['footer_text'] = $company_settings['invoice_footer_text'];
+        } else {
+            $footer_parts = [];
+            if (!empty($settings['company_name'])) $footer_parts[] = $settings['company_name'];
+            if (!empty($settings['company_address'])) $footer_parts[] = $settings['company_address'];
+            if (!empty($settings['company_telephone'])) $footer_parts[] = $settings['company_telephone'];
+            if (!empty($settings['registration_number'])) $footer_parts[] = 'RC: ' . $settings['registration_number'];
+            if (!empty($settings['tax_type']) && !empty($settings['vat_number'])) $footer_parts[] = $settings['tax_type'] . ': ' . $settings['vat_number'];
+            $settings['footer_text'] = !empty($footer_parts) ? implode(' - ', $footer_parts) : '';
+        }
         $settings['shipping_display'] = isset($company_settings['invoice_shipping_display']) ? $company_settings['invoice_shipping_display'] : '';
         $settings['invoice_template'] = isset($company_settings['invoice_template']) ? $company_settings['invoice_template'] : '';
         $settings['invoice_color'] = isset($company_settings['invoice_color']) ? $company_settings['invoice_color'] : '';
         $settings['invoice_qr_display'] = isset($company_settings['invoice_qr_display']) ? $company_settings['invoice_qr_display'] : '';
+
+        // Check if the template view exists, if not use template7 as fallback
+        if (!view()->exists('invoice.templates.' . $template)) {
+            $template = 'template7';
+        }
 
         return view('invoice.templates.' . $template, compact('invoice', 'preview', 'color', 'img', 'settings', 'customer', 'font_color', 'customFields', 'bank_details'));
     }

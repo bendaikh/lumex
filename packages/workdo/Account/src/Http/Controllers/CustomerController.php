@@ -155,6 +155,7 @@ class CustomerController extends Controller
             $customer->contact         = !empty($request->contact) ? $request->contact : null;
             $customer->email           = !empty($user->email) ? $user->email : null;
             $customer->tax_number      = !empty($request->tax_number) ? $request->tax_number : null;
+            $customer->ice             = !empty($request->ice) ? $request->ice : null;
             $customer->password        = null;
             $customer->billing_name    = !empty($request->billing_name) ? $request->billing_name : null;
             $customer->billing_country = !empty($request->billing_country) ? $request->billing_country : null;
@@ -317,6 +318,7 @@ class CustomerController extends Controller
             $customer->name             = $request->name;
             $customer->contact          = $request->contact;
             $customer->tax_number       = $request->tax_number;
+            $customer->ice              = $request->ice;
             $customer->billing_name     = $request->billing_name;
             $customer->billing_country  = $request->billing_country;
             $customer->billing_state    = $request->billing_state;
@@ -475,6 +477,8 @@ class CustomerController extends Controller
                                     <option value="email">Email</option>
                                     <option value="password">Password</option>
                                     <option value="contact">Contact</option>
+                                    <option value="tax_number">Tax Number</option>
+                                    <option value="ice">ICE</option>
                                     <option value="billing_name">Billing Name</option>
                                     <option value="billing_country">Billing Country</option>
                                     <option value="billing_state">Billing State</option>
@@ -589,6 +593,8 @@ class CustomerController extends Controller
                             'email' => $row[$request->email],
                             'password' => $row[$request->password],
                             'contact' => $row[$request->contact],
+                            'tax_number' => isset($request->tax_number) ? $row[$request->tax_number] : null,
+                            'ice' => isset($request->ice) ? $row[$request->ice] : null,
                             'billing_name' => $row[$request->billing_name],
                             'billing_country' => $row[$request->billing_country],
                             'billing_state' => $row[$request->billing_state],

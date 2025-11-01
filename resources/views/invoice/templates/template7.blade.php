@@ -50,11 +50,18 @@
     }
 
     .invoice-preview-main {
-        max-width: 700px;
-        width: 100%;
+        max-width: 750px;
+        width: 750px;
         margin: 0 auto;
         background: #ffff;
         box-shadow: 0 0 10px #ddd;
+    }
+    
+    @media print {
+        .invoice-preview-main {
+            max-width: 100%;
+            width: 100%;
+        }
     }
 
     .invoice-logo {
@@ -161,14 +168,100 @@
         width: 75px;
     }
 
-    /* Page break control */
-    table {
-        page-break-inside: avoid;
+    /* Pagination and Print Styles */
+    @media print {
+        body {
+            margin: 0;
+            padding: 0;
+            counter-reset: page;
+        }
+
+        @page {
+            size: A4;
+            margin: 10mm 15mm;
+            @bottom-center {
+                content: "Page " counter(page) " of " counter(pages);
+            }
+        }
+
+        .invoice-preview-main {
+            max-width: 100%;
+            width: 100%;
+            box-shadow: none;
+            page-break-after: auto;
+        }
+
+        .invoice-header {
+            page-break-inside: avoid;
+        }
+
+        .invoice-body {
+            page-break-inside: auto;
+        }
+
+        table {
+            page-break-inside: auto;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+            page-break-inside: avoid;
+        }
+
+        .no-print {
+            display: none;
+        }
+
     }
 
-    tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
+    /* Ensure content fits within page width */
+    .invoice-preview-main {
+        overflow-x: visible;
+    }
+
+    table {
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+
+    /* Adjust column widths for better fit */
+    .items-table th:nth-child(1),
+    .items-table td:nth-child(1) {
+        width: 50px; /* Image column */
+    }
+
+    .items-table th:nth-child(2),
+    .items-table td:nth-child(2) {
+        width: auto; /* Description column - takes remaining space */
+    }
+
+    .items-table th:nth-child(3),
+    .items-table td:nth-child(3) {
+        width: 60px; /* Quantity column */
+    }
+
+    .items-table th:nth-child(4),
+    .items-table td:nth-child(4) {
+        width: 90px; /* Price column */
+    }
+
+    .items-table th:nth-child(5),
+    .items-table td:nth-child(5) {
+        width: 90px; /* Tax column */
+    }
+
+    .items-table th:nth-child(6),
+    .items-table td:nth-child(6) {
+        width: 100px; /* Total column */
     }
 </style>
 </head>
@@ -193,109 +286,115 @@
             <table class="vertical-align-top">
                 <tbody>
                     <tr>
-                        <td>
-                            <p>
-                                @if (!empty($settings['company_name']))
-                                    {{ $settings['company_name'] }}
-                                @endif
-                                <br>
-                                @if (!empty($settings['company_email']))
-                                    {{ $settings['company_email'] }}
-                                @endif
-                                <br>
-                                @if (!empty($settings['company_telephone']))
-                                    {{ $settings['company_telephone'] }}
-                                @endif
+                        <td style="width: 50%;">
+                            <p style="font-size: 11px; line-height: 1.4;">
+                                <strong style="font-size: 13px;">
+                                    @if (!empty($settings['company_name']))
+                                        {{ $settings['company_name'] }}
+                                    @endif
+                                </strong>
                                 <br>
                                 @if (!empty($settings['company_address']))
                                     {{ $settings['company_address'] }}
                                 @endif
                                 @if (!empty($settings['company_city']))
-                                    <br> {{ $settings['company_city'] }},
+                                    <br>{{ $settings['company_city'] }}
                                 @endif
                                 @if (!empty($settings['company_state']))
-                                    {{ $settings['company_state'] }}
+                                    , {{ $settings['company_state'] }}
+                                @endif
+                                @if (!empty($settings['company_zipcode']))
+                                    {{ $settings['company_zipcode'] }}
                                 @endif
                                 @if (!empty($settings['company_country']))
                                     <br>{{ $settings['company_country'] }}
                                 @endif
-                                @if (!empty($settings['company_zipcode']))
-                                    - {{ $settings['company_zipcode'] }}
-                                @endif
-                                <br>
-                                @if (!empty($settings['registration_number']))
-                                    {{ __('Registration Number') }} : {{ $settings['registration_number'] }}
-                                @endif
-                                <br>
-                                @if (!empty($settings['tax_type']) && !empty($settings['vat_number']))
-                                    {{ $settings['tax_type'] . ' ' . __('Number') }} : {{ $settings['vat_number'] }}
-                                    <br>
-                                @endif
                             </p>
-                        </td>
-                        <td style="width: 60%;">
-                            <table class="no-space">
+                            <table class="no-space" style="margin-top: 15px;">
                                 <tbody>
                                     <tr>
-                                        <td>{{ __('Number: ') }}</td>
-                                        <td class="text-right">
-                                            {{ \App\Models\Invoice::invoiceNumberFormat($invoice->invoice_id, $invoice->created_by, $invoice->workspace) }}
-                                        </td>
+                                        <td><strong>{{ __('Référence') }}:</strong></td>
+                                        <td>{{ \App\Models\Invoice::invoiceNumberFormat($invoice->invoice_id, $invoice->created_by, $invoice->workspace) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ __('Issue Date:') }}</td>
-                                        <td class="text-right">
-                                            {{ company_date_formate($invoice->issue_date, $invoice->created_by, $invoice->workspace) }}
-                                        </td>
+                                        <td><strong>{{ __('Date') }}:</strong></td>
+                                        <td>{{ company_date_formate($invoice->issue_date, $invoice->created_by, $invoice->workspace) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ __('Due Date') }}:</td>
-                                        <td class="text-right">
-                                            {{ company_date_formate($invoice->due_date, $invoice->created_by, $invoice->workspace) }}
-                                        </td>
+                                        <td><strong>{{ __('Échéance') }}:</strong></td>
+                                        <td>{{ company_date_formate($invoice->due_date, $invoice->created_by, $invoice->workspace) }}</td>
                                     </tr>
                                     @if (!empty($customFields) && count($invoice->customField) > 0)
                                         @foreach ($customFields as $field)
                                             <tr>
-                                                <td>{{ $field->name }}:</td>
-                                                <td class="text-right" style="white-space: normal;">
+                                                <td><strong>{{ $field->name }}:</strong></td>
+                                                <td style="white-space: normal;">
                                                     @if ($field->type == 'attachment')
                                                         <a href="{{ get_file($invoice->customField[$field->id]) }}" target="_blank">
                                                             <img src=" {{ get_file($invoice->customField[$field->id]) }} " class="wid-75 rounded me-3">
                                                         </a>
                                                     @else
-                                                        <p>{{ !empty($invoice->customField[$field->id]) ? $invoice->customField[$field->id] : '-' }}</p>
+                                                        {{ !empty($invoice->customField[$field->id]) ? $invoice->customField[$field->id] : '-' }}
                                                     @endif
                                                 </td>
                                             </tr>
                                         @endforeach
                                     @endif
-                                    @if (isset($settings['invoice_qr_display']) && $settings['invoice_qr_display'] == 'on')
-                                        <tr>
-                                            @if (module_is_active('Zatca',$invoice->created_by))
-                                                <td colspan="2">
-                                                    <div class="view-qrcode">
-                                                        @include('zatca::zatca_qr_code', [
-                                                            'invoice_id' => $invoice->invoice_id,
-                                                        ])
-                                                    </div>
-                                                </td>
-                                            @else
-                                                <td colspan="2">
-                                                    <div class="view-qrcode">
-                                                        <p> {!! DNS2D::getBarcodeHTML(
-                                                            route('pay.invoice', \Illuminate\Support\Facades\Crypt::encrypt($invoice->id)),
-                                                            'QRCODE',
-                                                            2,
-                                                            2,
-                                                        ) !!}
-                                                    </div>
-                                                </td>
-                                            @endif
-                                        </tr>
-                                    @endif
                                 </tbody>
                             </table>
+                        </td>
+                        <td style="width: 50%; vertical-align: top; padding-left: 20px;">
+                            <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; font-size: 11px; line-height: 1.6;">
+                                @if($invoice->invoice_module != 'Fleet')
+                                    <p style="margin: 0;">
+                                        <strong style="font-size: 14px;">{{ !empty($customer->billing_name) ? $customer->billing_name : (!empty($customer->name) ? $customer->name : '') }}</strong><br>
+                                        @if(!empty($customer->tax_number))
+                                            <strong>{{ __('Référence client') }}:</strong> {{ $customer->tax_number }}<br>
+                                        @endif
+                                        @if(!empty($customer->ice))
+                                            <strong>ICE:</strong> {{ $customer->ice }}<br>
+                                        @endif
+                                        @if(!empty($customer->billing_address))
+                                            {{ $customer->billing_address }}<br>
+                                        @endif
+                                        @if(!empty($customer->billing_city))
+                                            {{ $customer->billing_city }}
+                                        @endif
+                                        @if(!empty($customer->billing_state))
+                                            , {{ $customer->billing_state }}
+                                        @endif
+                                        @if(!empty($customer->billing_zip))
+                                            {{ $customer->billing_zip }}
+                                        @endif
+                                        @if(!empty($customer->billing_country))
+                                            <br>{{ $customer->billing_country }}
+                                        @endif
+                                    </p>
+                                @else
+                                    <p style="margin: 0;">
+                                        <strong style="font-size: 14px;">{{ $commonCustomer['name'] }}</strong><br>
+                                        <strong>{{ __('Email') }}:</strong> {{ $commonCustomer['email'] }}
+                                    </p>
+                                @endif
+                            </div>
+                            @if (isset($settings['invoice_qr_display']) && $settings['invoice_qr_display'] == 'on')
+                                @if (module_is_active('Zatca',$invoice->created_by))
+                                    <div class="view-qrcode" style="margin-top: 10px;">
+                                        @include('zatca::zatca_qr_code', [
+                                            'invoice_id' => $invoice->invoice_id,
+                                        ])
+                                    </div>
+                                @else
+                                    <div class="view-qrcode" style="margin-top: 10px;">
+                                        {!! DNS2D::getBarcodeHTML(
+                                            route('pay.invoice', \Illuminate\Support\Facades\Crypt::encrypt($invoice->id)),
+                                            'QRCODE',
+                                            2,
+                                            2,
+                                        ) !!}
+                                    </div>
+                                @endif
+                            @endif
                         </td>
                     </tr>
                 </tbody>
@@ -303,63 +402,12 @@
 
         </div>
         <div class="invoice-body" style="border-bottom: 15px solid var(--theme-color);">
-            <table class="vertical-align-top">
-                <tbody>
-                    <tr>
-                        @if($invoice->invoice_module != 'Fleet')
-                        <td>
-                            @if (!empty($customer->billing_name) && !empty($customer->billing_address) && !empty($customer->billing_zip))
-                                <strong style="margin-bottom: 10px; display:block;">{{ __('Bill To') }}:</strong>
-                                <p>
-                                    {{ !empty($customer->billing_name) ? $customer->billing_name : '' }}<br>
-                                    {{ !empty($customer->billing_address) ? $customer->billing_address : '' }}<br>
-                                    {{ !empty($customer->billing_city) ? $customer->billing_city . ' ,' : '' }}
-                                    {{ !empty($customer->billing_state) ? $customer->billing_state . ' ,' : '' }}
-                                    {{ !empty($customer->billing_zip) ? $customer->billing_zip : '' }}<br>
-                                    {{ !empty($customer->billing_country) ? $customer->billing_country : '' }}<br>
-                                    {{ !empty($customer->billing_phone) ? $customer->billing_phone : '' }}<br>
-                                </p>
-                            @endif
-                        </td>
-                        @if ($settings['shipping_display'] == 'on')
-                            @if (!empty($customer->shipping_name) && !empty($customer->shipping_address) && !empty($customer->shipping_zip))
-                                <td class="text-right">
-                                    <strong style="margin-bottom: 10px; display:block;">{{ __('Ship To') }}:</strong>
-                                    <p>
-                                        {{ !empty($customer->shipping_name) ? $customer->shipping_name : '' }}<br>
-                                        {{ !empty($customer->shipping_address) ? $customer->shipping_address : '' }}<br>
-                                        {{ !empty($customer->shipping_city) ? $customer->shipping_city . ' ,' : '' }}
-                                        {{ !empty($customer->shipping_state) ? $customer->shipping_state . ' ,' : '' }}
-                                        {{ !empty($customer->shipping_zip) ? $customer->shipping_zip : '' }}<br>
-                                        {{ !empty($customer->shipping_country) ? $customer->shipping_country : '' }}<br>
-                                        {{ !empty($customer->shipping_phone) ? $customer->shipping_phone : '' }}<br>
-                                    </p>
-                                </td>
-                            @endif
-                        @endif
-                        @endif
-                    </tr>
-                    @if ($invoice->invoice_module == 'Fleet')
-                        <tr>
-                            <td style="font-size: 13px;">
-                                <label class="form-label" for="customer_name"
-                                    class="form-label">{{ __('Name : ') }}</label>
-                                {{ $commonCustomer['name'] }}
-                            </td>
-                            <td style="font-size: 13px;">
-                                <label class="form-label" for="customer_name"
-                                    class="form-label">{{ __('Email : ') }}</label>
-                                {{ $commonCustomer['email'] }}
-                            </td>
-                        </tr>
-                    @endif
-
-                </tbody>
-            </table>
-
-            <table class="add-border invoice-summary" style="margin-top: 30px;">
+            <table class="add-border invoice-summary items-table" style="margin-top: 30px;">
                 <thead style="background-color: var(--theme-color);color: {{ $font_color }};">
                     <tr>
+                        @if($invoice->invoice_module != "Fleet")
+                            <th>{{ __('Image') }}</th>
+                        @endif
                         @if($invoice->invoice_module == "account")
                             <th>{{__('Item Type')}}</th>
                         @endif
@@ -386,6 +434,24 @@
                     @if (isset($invoice->itemData) && count($invoice->itemData) > 0)
                     @foreach ($invoice->itemData as $key => $item)
                     <tr>
+                        @if ($invoice->invoice_module != 'Fleet')
+                            <td>
+                                @php
+                                    $product_image = null;
+                                    if (!empty($item->product_id)) {
+                                        $product = \Workdo\ProductService\Entities\ProductService::find($item->product_id);
+                                        if ($product && !empty($product->image)) {
+                                            $product_image = get_file($product->image);
+                                        }
+                                    }
+                                @endphp
+                                @if($product_image)
+                                    <img src="{{ $product_image }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="Product">
+                                @else
+                                    <div style="width: 50px; height: 50px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-size: 10px;">N/A</div>
+                                @endif
+                            </td>
+                        @endif
                         @if ($invoice->invoice_module == 'account')
                             <td>{{ !empty($item->product_type) ? Str::ucfirst($item->product_type) : '--' }}
                             </td>
@@ -435,6 +501,9 @@
                 @endforeach
                 @else
                     <tr>
+                        @if($invoice->invoice_module != "Fleet")
+                            <td>-</td>
+                        @endif
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>
@@ -445,13 +514,16 @@
                         <td>-</td>
                         <td>-</td>
                     <tr class="border-0 itm-description ">
-                        <td colspan="6">-</td>
+                        <td colspan="7">-</td>
                     </tr>
                     </tr>
                     @endif
                 </tbody>
                 <tfoot>
                     <tr>
+                        @if($invoice->invoice_module != "Fleet")
+                            <td></td>
+                        @endif
                         @if($invoice->invoice_module == "account")
                             <td></td>
                         @endif
@@ -478,6 +550,10 @@
                             $colspan = 4;
                             if($invoice->invoice_module == "account"){
                                 $colspan = 5;
+                            }
+                            // Add one more column for image
+                            if($invoice->invoice_module != "Fleet"){
+                                $colspan = $colspan + 1;
                             }
                         @endphp
                         <td colspan="{{$colspan}}"></td>
@@ -573,14 +649,29 @@
             <!--    </tbody>-->
             <!--</table>-->
             <div class="invoice-footer">
-                <p> {{ $settings['footer_title'] }} <br>
-                    {{ $settings['footer_notes'] }} </p>
+                @if(!empty($settings['footer_title']) || !empty($settings['footer_notes']))
+                    <p> 
+                        @if(!empty($settings['footer_title']))
+                            {{ $settings['footer_title'] }} <br>
+                        @endif
+                        @if(!empty($settings['footer_notes']))
+                            {{ $settings['footer_notes'] }}
+                        @endif
+                    </p>
+                @endif
             </div>
         </div>
+        @if(!empty($settings['footer_text']))
+        <div class="footer-legal-text" style="background: #f8f8f8; padding: 15px 20px; text-align: center; font-size: 10px; line-height: 1.6; color: #333; border-top: 2px solid #ddd; margin-top: 20px; page-break-inside: avoid;">
+            {!! nl2br(e($settings['footer_text'])) !!}
+        </div>
+        @endif
     </div>
+
     @if (!isset($preview))
         @include('invoice.script')
     @endif
 </body>
 
 </html>
+

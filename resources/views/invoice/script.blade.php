@@ -8,17 +8,44 @@
         }, 1000);
     }
 
-    $( document ).ready(function() {
+    $(document).ready(function() {
         var element = document.getElementById('boxes');
         var opt = {
-            margin:       0.5,
-            filename:     '{{ \App\Models\Invoice::invoiceNumberFormat($invoice->invoice_id,$invoice->created_by)}}',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 4, dpi: 72, letterRendering: true },
-            jsPDF:        { unit: 'in', format: 'A4' },
-            pagebreak:    { avoid: ['tr','td']}
+            margin: 0.4,
+            filename: '{{ \App\Models\Invoice::invoiceNumberFormat($invoice->invoice_id,$invoice->created_by)}}',
+            image: {type: 'jpeg', quality: 0.98},
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                letterRendering: true
+            },
+            jsPDF: {
+                unit: 'in',
+                format: 'a4',
+                orientation: 'portrait'
+            },
+            pagebreak: {
+                mode: ['avoid-all', 'css', 'legacy']
+            }
         };
-        html2pdf().set(opt).from(element).save().then(closeScript);
+        
+        // Generate PDF with page numbers
+        var worker = html2pdf().set(opt).from(element);
+        
+        worker.toPdf().get('pdf').then(function (pdf) {
+            var totalPages = pdf.internal.getNumberOfPages();
+            
+            // Add page numbers to each page
+            for (var i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(9);
+                pdf.setTextColor(100);
+                var pageText = 'Page ' + i + ' of ' + totalPages;
+                var textWidth = pdf.getStringUnitWidth(pageText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
+                var textX = (pdf.internal.pageSize.getWidth() - textWidth) / 2;
+                pdf.text(pageText, textX, pdf.internal.pageSize.getHeight() - 0.3);
+            }
+        }).save().then(closeScript);
     });
 
 </script>

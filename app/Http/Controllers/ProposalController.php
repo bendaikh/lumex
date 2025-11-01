@@ -1250,7 +1250,12 @@ class ProposalController extends Controller
                 $proposal_template = $proposal->proposal_template;
             }
             else{
-            $proposal_template  = (!empty($company_settings['proposal_template']) ? $company_settings['proposal_template'] : 'template1');
+                $proposal_template  = (!empty($company_settings['proposal_template']) ? $company_settings['proposal_template'] : 'template7');
+            }
+
+            // Check if the template view exists, if not use template7 as fallback
+            if (!view()->exists('proposal.templates.' . $proposal_template)) {
+                $proposal_template = 'template7';
             }
 
             $settings['site_rtl'] = isset($company_settings['site_rtl']) ? $company_settings['site_rtl'] : '';
@@ -1267,6 +1272,19 @@ class ProposalController extends Controller
             $settings['vat_number'] = isset($company_settings['vat_number']) ? $company_settings['vat_number'] : '';
             $settings['proposal_footer_title'] = isset($company_settings['proposal_footer_title']) ? $company_settings['proposal_footer_title'] : '';
             $settings['proposal_footer_notes'] = isset($company_settings['proposal_footer_notes']) ? $company_settings['proposal_footer_notes'] : '';
+            
+            // Build default footer text only with fields that have values
+            if (isset($company_settings['proposal_footer_text']) && !empty($company_settings['proposal_footer_text'])) {
+                $settings['proposal_footer_text'] = $company_settings['proposal_footer_text'];
+            } else {
+                $footer_parts = [];
+                if (!empty($settings['company_name'])) $footer_parts[] = $settings['company_name'];
+                if (!empty($settings['company_address'])) $footer_parts[] = $settings['company_address'];
+                if (!empty($settings['company_telephone'])) $footer_parts[] = $settings['company_telephone'];
+                if (!empty($settings['registration_number'])) $footer_parts[] = 'RC: ' . $settings['registration_number'];
+                if (!empty($settings['tax_type']) && !empty($settings['vat_number'])) $footer_parts[] = $settings['tax_type'] . ': ' . $settings['vat_number'];
+                $settings['proposal_footer_text'] = !empty($footer_parts) ? implode(' - ', $footer_parts) : '';
+            }
             $settings['proposal_shipping_display'] = isset($company_settings['proposal_shipping_display']) ? $company_settings['proposal_shipping_display'] : '';
             $settings['proposal_template'] = isset($company_settings['proposal_template']) ? $company_settings['proposal_template'] : '';
             $settings['proposal_color'] = isset($company_settings['proposal_color']) ? $company_settings['proposal_color'] : '';
@@ -1467,10 +1485,28 @@ class ProposalController extends Controller
         $settings['vat_number'] = isset($company_settings['vat_number']) ? $company_settings['vat_number'] : '';
         $settings['proposal_footer_title'] = isset($company_settings['proposal_footer_title']) ? $company_settings['proposal_footer_title'] : '';
         $settings['proposal_footer_notes'] = isset($company_settings['proposal_footer_notes']) ? $company_settings['proposal_footer_notes'] : '';
+        
+        // Build default footer text only with fields that have values
+        if (isset($company_settings['proposal_footer_text']) && !empty($company_settings['proposal_footer_text'])) {
+            $settings['proposal_footer_text'] = $company_settings['proposal_footer_text'];
+        } else {
+            $footer_parts = [];
+            if (!empty($settings['company_name'])) $footer_parts[] = $settings['company_name'];
+            if (!empty($settings['company_address'])) $footer_parts[] = $settings['company_address'];
+            if (!empty($settings['company_telephone'])) $footer_parts[] = $settings['company_telephone'];
+            if (!empty($settings['registration_number'])) $footer_parts[] = 'RC: ' . $settings['registration_number'];
+            if (!empty($settings['tax_type']) && !empty($settings['vat_number'])) $footer_parts[] = $settings['tax_type'] . ': ' . $settings['vat_number'];
+            $settings['proposal_footer_text'] = !empty($footer_parts) ? implode(' - ', $footer_parts) : '';
+        }
         $settings['proposal_shipping_display'] = isset($company_settings['proposal_shipping_display']) ? $company_settings['proposal_shipping_display'] : '';
         $settings['proposal_template'] = isset($company_settings['proposal_template']) ? $company_settings['proposal_template'] : '';
         $settings['proposal_color'] = isset($company_settings['proposal_color']) ? $company_settings['proposal_color'] : '';
         $settings['proposal_qr_display'] = isset($company_settings['proposal_qr_display']) ? $company_settings['proposal_qr_display'] : '';
+
+        // Check if the template view exists, if not use template7 as fallback
+        if (!view()->exists('proposal.templates.' . $template)) {
+            $template = 'template7';
+        }
 
         return view('proposal.templates.' . $template, compact('proposal', 'preview', 'color', 'img', 'settings', 'customer', 'font_color', 'customFields'));
     }
