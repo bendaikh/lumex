@@ -39,13 +39,15 @@
         // Hide the original HTML footer block to avoid duplicate on last page
         var footerBlock = document.querySelector('.footer-legal-text');
         var originalFooterDisplay = null;
+        var footerText = '';
+        
         if (footerBlock) {
             originalFooterDisplay = footerBlock.style.display;
+            // Extract the text content directly from the DOM to preserve encoding
+            footerText = footerBlock.innerText || footerBlock.textContent || '';
             footerBlock.style.display = 'none';
         }
 
-        // Prepare footer text from settings to draw on every page
-        var footerText = {!! json_encode(strip_tags($settings['footer_text'] ?? '')) !!};
         footerText = (footerText || '').trim();
 
         // Generate PDF with repeated footer and page numbers
@@ -60,9 +62,48 @@
 
             // Footer style: filled background (#CEDAE1) with centered black text, no border
             var footerFontSize = 10;
-            var lineHeight = 0.14; // inches per line
+            var lineHeight = 0.16; // inches per line
             var maxFooterWidth = pageWidth - sideMargin * 2;
-            var footerLines = footerText ? pdf.splitTextToSize(footerText, maxFooterWidth - 0.2) : [];
+            
+            function normalizeFooterText(rawText) {
+                if (!rawText) {
+                    return '';
+                }
+
+                var cleaned = rawText
+                    .replace(/\uFEFF/g, '') // remove BOM
+                    .replace(/\u00A0/g, ' ') // replace non-breaking spaces
+                    .replace(/\u2022/g, ' - ')
+                    .replace(/\u2023/g, ' - ')
+                    .replace(/\u2024/g, ' - ')
+                    .replace(/\u2219/g, ' - ')
+                    .replace(/\u00B7/g, ' - ')
+                    .replace(/\r\n/g, '\n')
+                    .replace(/\r/g, '\n');
+
+                var lines = cleaned.split('\n').map(function (line) {
+                    return line.trim();
+                }).filter(function (line) {
+                    return line.length;
+                });
+
+                return lines.join('\n');
+            }
+
+            var sanitizedFooterText = normalizeFooterText(footerText);
+            var footerLines = [];
+
+            if (sanitizedFooterText) {
+                sanitizedFooterText.split('\n').forEach(function (line) {
+                    var wrapped = pdf.splitTextToSize(line, maxFooterWidth - 0.2);
+                    if (Array.isArray(wrapped)) {
+                        footerLines = footerLines.concat(wrapped);
+                    } else if (wrapped) {
+                        footerLines.push(wrapped);
+                    }
+                });
+            }
+
             var paddingY = 0.12; // vertical padding inside the background bar
             var pageNumberY = pageHeight - 0.3; // page number position
             var gapAbovePageNumber = 0.12;
@@ -75,17 +116,21 @@
 
             for (var i = 1; i <= totalPages; i++) {
                 pdf.setPage(i);
-
+                
                 // Background bar across full page width
                 pdf.setFillColor(206, 218, 225); // #CEDAE1
                 pdf.rect(0, barTopY, pageWidth, barHeight, 'F');
 
                 // Footer text (centered, black)
                 if (footerLines.length > 0) {
+                    pdf.setFont('helvetica', 'normal');
                     pdf.setFontSize(footerFontSize);
                     pdf.setTextColor(0, 0, 0);
-                    var startY = barTopY + paddingY + lineHeight;
-                    pdf.text(footerLines, pageWidth / 2, startY, { align: 'center' });
+                    var currentY = barTopY + paddingY + lineHeight;
+                    footerLines.forEach(function(line) {
+                        pdf.text(line, pageWidth / 2, currentY, { align: 'center', maxWidth: maxFooterWidth - 0.2 });
+                        currentY += lineHeight;
+                    });
                 }
 
                 // Add centered page number
