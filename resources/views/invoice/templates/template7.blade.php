@@ -118,7 +118,7 @@
     }
 
     .sub-total {
-        padding-right: 0;
+        padding-right: 6px; /* small inner right padding to avoid edge clipping */
         padding-left: 0;
     }
 
@@ -263,21 +263,79 @@
     .items-table td:nth-child(6) {
         width: 100px; /* Total column */
     }
+
+    /* Proposal-style totals summary */
+    .totals-section {
+        border-top: 1px solid #d1d5db;
+        padding-top: 14px;
+        margin-top: 6px;
+    }
+
+    /* Wrapper for summary section outside the items table */
+    .totals-section-wrapper {
+        margin-top: 20px;
+        padding: 0;
+        display: flex;
+        justify-content: center; /* center the summary */
+    }
+
+    .totals-summary {
+        width: auto; /* dynamic width - only uses what's needed */
+        max-width: 100%;
+        border-collapse: collapse;
+        table-layout: auto; /* auto layout for flexibility */
+    }
+
+    .totals-summary td {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .totals-summary tr + tr td {
+        padding-top: 8px;
+    }
+
+    .totals-summary td:first-of-type {
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #374151;
+        font-weight: 600;
+        text-align: left;
+        white-space: nowrap;
+        padding-right: 20px; /* gap before values */
+        width: auto; /* auto width for labels */
+    }
+
+    .totals-summary td:last-of-type {
+        text-align: right;
+        color: #111827;
+        font-weight: 600;
+        white-space: nowrap; /* keep on one line */
+        padding-left: 0;
+        padding-right: 0; /* no right padding needed */
+        width: auto; /* auto width for values */
+        overflow: visible; /* ensure nothing is hidden */
+    }
+
+    .totals-summary__accent td {
+        background: #f3f4f6;
+        font-weight: 700;
+    }
 </style>
 </head>
 
 <body>
     <div class="invoice-preview-main" id="boxes">
         <div class="invoice-header" style="border-top: 15px solid var(--theme-color); background: #f8f8f8;">
-            <table>
+            <table style="width: 100%;">
                 <tbody>
                     <tr>
-                        <td>
+                        <td style="width: 20%;">
                             <img class="invoice-logo" src="{{ $img }}" alt="">
                         </td>
-                        <td class="text-right">
+                        <td style="width: 80%; padding: 10px 20px; text-align: right; overflow: visible; padding-right: 60px;">
                             <h3
-                                style="text-transform: uppercase; font-size: 40px; font-weight: bold; color: {{ $color }};">
+                                style="text-transform: uppercase; font-size: 40px; font-weight: bold; color: {{ $color }}; margin: 0; word-wrap: break-word; overflow: visible;">
                                 {{ __('INVOICE') }}</h3>
                         </td>
                     </tr>
@@ -545,74 +603,43 @@
                             </td>
                         @endif
                     </tr>
-                    <tr>
-                        @php
-                            $colspan = 4;
-                            if($invoice->invoice_module == "account"){
-                                $colspan = 5;
-                            }
-                            // Add one more column for image
-                            if($invoice->invoice_module != "Fleet"){
-                                $colspan = $colspan + 1;
-                            }
-                        @endphp
-                        <td colspan="{{$colspan}}"></td>
-                        <td colspan="2" class="sub-total">
-                            <table class="total-table">
-                                @if ($invoice->invoice_module != 'Fleet')
-
-                                <tr>
-                                    <td>{{ __('Subtotal') }}:</td>
-                                    <td>{{ currency_format_with_sym($invoice->getSubTotal(), $invoice->created_by, $invoice->workspace) }}
-                                    </td>
-                                </tr>
-                                @if ($invoice->getTotalDiscount())
-                                    <tr>
-                                        <td>{{ __('Discount') }}:</td>
-                                        <td>{{ currency_format_with_sym($invoice->getTotalDiscount(), $invoice->created_by, $invoice->workspace) }}
-                                        </td>
-                                    </tr>
-                                @endif
-                                @endif
-                                @if (!empty($invoice->taxesData))
-                                    @foreach ($invoice->taxesData as $taxName => $taxPrice)
-                                        <tr>
-                                            <td>{{ $taxName }} :</td>
-                                            <td>{{ currency_format_with_sym($taxPrice, $invoice->created_by, $invoice->workspace) }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                <tr>
-                                    <td>{{ __('Total') }}:</td>
-                                    @if ($invoice->invoice_module == 'Fleet')
-                                        <td>{{ currency_format_with_sym($invoice->getFleetSubTotal(), $invoice->created_by, $invoice->workspace) }}</td>
-                                    @else
-                                        <td>{{ currency_format_with_sym($invoice->getSubTotal() - $invoice->getTotalDiscount() + $invoice->getTotalTax(), $invoice->created_by, $invoice->workspace) }}
-                                        </td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td>{{ __('Paid') }}:</td>
-                                    <td>{{ currency_format_with_sym($invoice->getTotal() - $invoice->getDue() - $invoice->invoiceTotalCreditNote(), $invoice->created_by, $invoice->workspace) }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{{ __('Credit Note') }}:</td>
-                                    <td>{{ currency_format_with_sym($invoice->invoiceTotalCreditNote(), $invoice->created_by, $invoice->workspace) }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{{ __('Due Amount') }}:</td>
-                                    <td>{{ currency_format_with_sym($invoice->getDue(), $invoice->created_by, $invoice->workspace) }}
-                                    </td>
-                                </tr>
-
-                            </table>
-                        </td>
-                    </tr>
                 </tfoot>
             </table>
+
+            <!-- Summary Section - Outside items table for full width -->
+            @php
+                // Compute totals similar to proposal summary
+                $subtotal = $invoice->getSubTotal();
+                $discount = $invoice->getTotalDiscount();
+                $netHT = $subtotal - $discount;
+                $taxTotal = $invoice->getTotalTax();
+                $netTTC = $netHT + $taxTotal;
+                $dueAmount = $invoice->getDue();
+            @endphp
+            <div class="totals-section-wrapper">
+                <table class="totals-summary">
+                    <tr>
+                        <td>{{ __('TOTAL HT') }} :</td>
+                        <td>{{ currency_format_with_sym($subtotal, $invoice->created_by, $invoice->workspace) }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ __('Remise') }} :</td>
+                        <td>{{ currency_format_with_sym($discount, $invoice->created_by, $invoice->workspace) }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ __('Total NET HT') }} :</td>
+                        <td>{{ currency_format_with_sym($netHT, $invoice->created_by, $invoice->workspace) }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ __('TVA') }} :</td>
+                        <td>{{ currency_format_with_sym($taxTotal, $invoice->created_by, $invoice->workspace) }}</td>
+                    </tr>
+                    <tr class="totals-summary__accent">
+                        <td>{{ __('Montant NET TTC') }} :</td>
+                        <td>{{ currency_format_with_sym($netTTC, $invoice->created_by, $invoice->workspace) }}</td>
+                    </tr>
+                </table>
+            </div>
             <!--<table class="add-border bank-details" style="margin-top: 30px;">-->
             <!--    <thead style="background-color: var(--theme-color);color: {{ $font_color }};">-->
             <!--        <tr>-->
@@ -661,13 +688,13 @@
                 @endif
             </div>
         </div>
-        @if(!empty($settings['footer_text']))
-        <div class="footer-legal-text" style="background: #f8f8f8; padding: 15px 20px; text-align: center; font-size: 10px; line-height: 1.6; color: #333; border-top: 2px solid #ddd; margin-top: 20px; page-break-inside: avoid;">
-            {!! nl2br(e($settings['footer_text'])) !!}
-        </div>
-        @endif
     </div>
-
+    @if(!empty($settings['footer_text']))
+    <!-- Fixed footer outside main wrapper; actual repeating is handled in invoice.script -->
+    <div class="footer-legal-text" style="background: #f8f8f8; padding: 15px 20px; text-align: center; font-size: 10px; line-height: 1.6; color: #333; border-top: 2px solid #ddd;">
+        {!! nl2br(e($settings['footer_text'])) !!}
+    </div>
+    @endif
     @if (!isset($preview))
         @include('invoice.script')
     @endif

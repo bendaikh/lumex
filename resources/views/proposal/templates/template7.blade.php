@@ -144,19 +144,6 @@
             border-bottom: 1px solid var(--theme-color);
         }
 
-        .total-table tr:first-of-type td {
-            padding-top: 0;
-        }
-
-        .total-table tr:first-of-type {
-            border-top: 0;
-        }
-
-        .sub-total {
-            padding-right: 15px;
-            padding-left: 0;
-        }
-
         .border-0 {
             border: none !important;
         }
@@ -165,25 +152,6 @@
         .invoice-summary th {
             font-size: 13px;
             font-weight: 600;
-        }
-
-        .total-table td:first-of-type {
-            white-space: nowrap;
-            padding-right: 40px;
-            min-width: 120px;
-        }
-        
-        /* Fix footer currency to prevent MAD from being cut off */
-        .total-table td:last-of-type {
-            width: 180px;
-            padding-left: 20px;
-            padding-right: 20px;
-            text-align: right;
-            white-space: nowrap;
-        }
-        
-        .total-table tr {
-            line-height: 2;
         }
 
         .invoice-footer {
@@ -277,6 +245,20 @@
             .no-print {
                 display: none;
             }
+
+            /* --- Ensure footer repeats on every printed page --- */
+            .footer-legal-text {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+
+            /* Prevent content from overlapping the fixed footer */
+            .invoice-preview-main {
+                padding-bottom: 80px; /* adjust if footer height changes */
+            }
+            /* --- End footer repeat rules --- */
         }
 
         /* Ensure content fits within page width */
@@ -352,6 +334,56 @@
         .items-table tbody tr.no-page-break + tr.itm-description {
             page-break-inside: avoid !important;
             page-break-before: avoid !important;
+        }
+
+        .sub-total {
+            padding-right: 30px;
+            padding-left: 0;
+        }
+
+        .totals-section {
+            border-top: 1px solid #d1d5db;
+            padding-top: 14px;
+            margin-top: 6px;
+        }
+
+        .totals-summary {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        .totals-summary td {
+            padding: 6px 4px;
+            font-size: 13px;
+        }
+
+        .totals-summary tr + tr td {
+            padding-top: 6px;
+        }
+
+        .totals-summary td:first-of-type {
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #374151;
+            font-weight: 600;
+            text-align: left;
+            white-space: nowrap;
+            padding-right: 0px;
+        }
+
+        .totals-summary td:last-of-type {
+            text-align: right;
+            color: #111827;
+            font-weight: 600;
+            white-space: nowrap;
+            padding-left: 16px;
+            padding-right: 30px;
+        }
+
+        .totals-summary__accent td {
+            background: #f3f4f6;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -579,31 +611,37 @@
                     </tr>
                     <tr>
                         @php
-                            $colspan = 5; // Add one for image column
+                            // Leave four columns blank (including image column) and use the remaining three for totals to provide more width
+                            $emptyColumnSpan = 4;
+                            $totalsColumnSpan = 3;
+                            $totalHT = $proposal->getSubTotal();
+                            $totalDiscount = $proposal->getTotalDiscount();
+                            $totalNetHT = $totalHT - $totalDiscount;
+                            $totalTVA = $proposal->getTotalTax();
+                            $montantNetTTC = $totalNetHT + $totalTVA;
                         @endphp
-                        <td colspan="{{$colspan}}"></td>
-                        <td colspan="2" class="sub-total">
-                            <table class="total-table">
-                                @if ($proposal->getTotalDiscount())
-                                    <tr>
-                                        <td>{{ __('Discount') }}:</td>
-                                        <td>{{ currency_format_with_sym($proposal->getTotalDiscount(), $proposal->created_by, $proposal->workspace) }}
-                                        </td>
-                                    </tr>
-                                @endif
-                                @if (!empty($proposal->taxesData))
-                                    @foreach ($proposal->taxesData as $taxName => $taxPrice)
-                                        <tr>
-                                            <td>{{ $taxName }} :</td>
-                                            <td>{{ currency_format_with_sym($taxPrice, $proposal->created_by, $proposal->workspace) }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
+                        <td colspan="{{ $emptyColumnSpan }}"></td>
+                        <td colspan="{{ $totalsColumnSpan }}" class="sub-total totals-section">
+                            <table class="totals-summary no-page-break">
                                 <tr>
-                                    <td><strong>{{ __('Total') }}:</strong></td>
-                                    <td><strong>{{ currency_format_with_sym($proposal->getSubTotal() - $proposal->getTotalDiscount() + $proposal->getTotalTax(), $proposal->created_by, $proposal->workspace) }}</strong>
-                                    </td>
+                                    <td>{{ __('TOTAL HT') }} :</td>
+                                    <td>{{ currency_format_with_sym($totalHT, $proposal->created_by, $proposal->workspace) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ __('Remise') }} :</td>
+                                    <td>{{ currency_format_with_sym($totalDiscount, $proposal->created_by, $proposal->workspace) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ __('Total NET HT') }} :</td>
+                                    <td>{{ currency_format_with_sym($totalNetHT, $proposal->created_by, $proposal->workspace) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ __('TVA') }} :</td>
+                                    <td>{{ currency_format_with_sym($totalTVA, $proposal->created_by, $proposal->workspace) }}</td>
+                                </tr>
+                                <tr class="totals-summary__accent">
+                                    <td>{{ __('Montant NET TTC') }} :</td>
+                                    <td>{{ currency_format_with_sym($montantNetTTC, $proposal->created_by, $proposal->workspace) }}</td>
                                 </tr>
                             </table>
                         </td>
@@ -623,12 +661,13 @@
                 @endif
             </div>
         </div>
-        @if(!empty($settings['proposal_footer_text']))
-        <div class="footer-legal-text no-page-break" style="background: #f8f8f8; padding: 15px 20px; text-align: center; font-size: 10px; line-height: 1.6; color: #333; border-top: 2px solid #ddd; margin-top: 0; page-break-inside: avoid;">
-            {!! nl2br(e($settings['proposal_footer_text'])) !!}
-        </div>
-        @endif
     </div>
+    <!-- Fixed footer outside main wrapper so it repeats on each page -->
+    @if(!empty($settings['proposal_footer_text']))
+    <div class="footer-legal-text" style="background: #f8f8f8; padding: 15px 20px; text-align: center; font-size: 10px; line-height: 1.6; color: #333; border-top: 2px solid #ddd;">
+        {!! nl2br(e($settings['proposal_footer_text'])) !!}
+    </div>
+    @endif
 
     @if (!isset($preview))
         @include('proposal.script')
