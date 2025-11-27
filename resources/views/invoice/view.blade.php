@@ -158,15 +158,14 @@
             </div>
         </div>
     @endif
-
-    @if ($invoice->status != 0)
-        <div class="row justify-content-between align-items-center mb-3">
-            <div class="col-md-6">
-                <ul class="nav nav-pills nav-fill cust-nav information-tab" id="pills-tab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="invoice-tab" data-bs-toggle="pill" data-bs-target="#invoice"
-                            type="button">{{ __('Invoice') }}</button>
-                    </li>
+    <div class="row justify-content-between align-items-center mb-3">
+        <div class="col-md-4">
+            <ul class="nav nav-pills nav-fill cust-nav information-tab" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="invoice-tab" data-bs-toggle="pill"
+                        data-bs-target="#invoice" type="button">{{ __('Invoice') }}</button>
+                </li>
+                @if ($invoice->status != 0)
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="receipt-summary-tab" data-bs-toggle="pill"
                             data-bs-target="#receipt-summary" type="button">{{ __('Receipt Summary') }}</button>
@@ -175,64 +174,50 @@
                         <button class="nav-link" id="credit-summary-tab" data-bs-toggle="pill"
                             data-bs-target="#credit-summary" type="button">{{ __('Credit Note Summary') }}</button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="invoice-attechment-tab" data-bs-toggle="pill"
-                            data-bs-target="#invoice-attechment" type="button">{{ __('Attachment') }}</button>
-                    </li>
-                    @stack('add_recurring_tab')
-
-                </ul>
-            </div>
-
-            <div class="col-md-6 d-flex align-items-center justify-content-between justify-content-md-end">
-                @permission('creditnote create')
-                    @if (!empty($customer) && $customer->model == 'Customer')
-                        <div class="all-button-box mx-2">
-                            <a href="#" class="btn btn-sm btn-primary"
-                                data-url="{{ route('invoice.credit.note', $invoice->id) }}" data-ajax-popup="true"
-                                data-title="{{ __('Apply Credit Note') }}">
-                                {{ __('Apply Credit Note') }}
-                            </a>
-                        </div>
-                    @endif
-                @endpermission
-                @if (\Auth::user()->type == 'company')
-                    @if ($invoice->status != 4)
-                        <div class="all-button-box mx-2">
-                            <a href="{{ route('invoice.payment.reminder', $invoice->id) }}"
-                                class="btn btn-sm btn-primary">{{ __('Receipt Reminder') }}</a>
-                        </div>
-                    @endif
-                    <div class="all-button-box mx-2">
-                        <a href="{{ route('invoice.resent', $invoice->id) }}"
-                            class="btn btn-sm btn-primary">{{ __('Resend Invoice') }}</a>
-                    </div>
                 @endif
-                <div class="all-button-box mx-2">
-                    <a href="{{ route('invoice.pdf', Crypt::encrypt($invoice->id)) }}" target="_blank"
-                        class="btn btn-sm btn-primary">{{ __('Download') }}</a>
-                </div>
-            </div>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="invoice-attechment-tab" data-bs-toggle="pill"
+                        data-bs-target="#invoice-attechment" type="button">{{ __('Attechment') }}</button>
+                </li>
+                @stack('add_recurring_tab')
+            </ul>
         </div>
-    @else
-        <div class="row justify-content-between align-items-center mb-3">
-            <div class="col-md-12 d-flex align-items-center justify-content-between justify-content-md-end">
-                <div class="all-button-box mx-2">
-                    <a href="{{ route('invoice.pdf', Crypt::encrypt($invoice->id)) }}" target="_blank"
-                        class="btn btn-xs btn-primary btn-icon-only width-auto">
-                        {{ __('Download') }}
-                    </a>
-                </div>
-                {{-- @if ($invoice->getDue() > 0 && !empty($company_payment_setting) && ($company_payment_setting['is_stripe_enabled'] == 'on' || $company_payment_setting['is_paypal_enabled'] == 'on' || $company_payment_setting['is_paystack_enabled'] == 'on' || $company_payment_setting['is_flutterwave_enabled'] == 'on' || $company_payment_setting['is_razorpay_enabled'] == 'on' || $company_payment_setting['is_mercado_enabled'] == 'on' || $company_payment_setting['is_paytm_enabled'] == 'on' || $company_payment_setting['is_mollie_enabled'] == 'on' || $company_payment_setting['is_paypal_enabled'] == 'on' || $company_payment_setting['is_skrill_enabled'] == 'on' || $company_payment_setting['is_coingate_enabled'] == 'on' || $company_payment_setting['is_paymentwall_enabled'] == 'on'))
+        <div class="col-md-8 d-flex align-items-center justify-content-between justify-content-md-end">
+            <div class="row align-items-center ">
+                <div class="col-md-12 d-flex align-items-center justify-content-md-end">
+                    @if ($invoice->status != 0)
+                        @permission('creditnote create')
+                            @if (!empty($customer) && $customer->model == 'Customer')
+                                <div class="all-button-box mx-2">
+                                    <a href="#" class="btn btn-xs btn-primary btn-icon-only width-auto"
+                                        data-url="{{ route('invoice.credit.note', $invoice->id) }}" data-ajax-popup="true"
+                                        data-title="{{ __('Apply Credit Note') }}">
+                                        {{ __('Apply Credit Note') }}
+                                    </a>
+                                </div>
+                            @endif
+                        @endpermission
+                        @if (\Auth::user()->type == 'company')
+                            @if ($invoice->status != 4)
+                                <div class="all-button-box mx-2">
+                                    <a href="{{ route('invoice.payment.reminder', $invoice->id) }}"
+                                        class="btn btn-xs btn-primary btn-icon-only width-auto">{{ __('Receipt Reminder') }}</a>
+                                </div>
+                            @endif
+                            <div class="all-button-box mx-2">
+                                <a href="{{ route('invoice.resent', $invoice->id) }}"
+                                    class="btn btn-xs btn-primary btn-icon-only width-auto">{{ __('Resend Invoice') }}</a>
+                            </div>
+                        @endif
+                    @endif
                     <div class="all-button-box">
-                        <a href="#" class="btn btn-xs btn-primary btn-icon-only width-auto" data-bs-toggle="modal" data-bs-target="#paymentModal">
-                            {{__('Pay Now')}}
-                        </a>
+                        <a href="{{ route('invoice.pdf', Crypt::encrypt($invoice->id)) }}" target="_blank"
+                            class="btn btn-xs btn-primary btn-icon-only width-auto">{{ __('Download') }}</a>
                     </div>
-                @endif --}}
+                </div>
             </div>
         </div>
-    @endif
+    </div>
 
     <div class="row">
         <div class="col-lg-12">
@@ -622,25 +607,6 @@
                                                     <tr>
 
                                                         <th data-width="40" class="text-dark">#</th>
-                                                        @if ($invoice->invoice_module == 'account' || $invoice->invoice_module == 'cmms' || $invoice->invoice_module == 'rent' || $invoice->invoice_module == 'machinerepair' || $invoice->invoice_module == 'musicinstitute' || $invoice->invoice_module == 'vehicleinspection' )
-                                                            <th class="text-dark">{{ __('Item Type') }}</th>
-                                                            <th class="text-dark">{{ __('Item') }}</th>
-                                                        @elseif($invoice->invoice_module == 'taskly')
-                                                            <th class="text-dark">{{ __('Project') }}</th>
-                                                        @elseif($invoice->invoice_module == 'lms')
-                                                            <th class="text-dark">{{ __('Course') }}</th>
-                                                        @elseif($invoice->invoice_module == 'childcare')
-                                                            <th class="text-dark">{{ __('Name') }}</th>
-                                                        @elseif($invoice->invoice_module == 'cardealership' || $invoice->invoice_module == 'sales' || $invoice->invoice_module == 'newspaper'|| $invoice->invoice_module == 'mobileservice')
-                                                            <th class="text-dark">{{ __('Items') }}</th>
-                                                        @elseif($invoice->invoice_module == 'legalcase' )
-                                                            <th class="text-dark">{{ __('PARTICULARS') }}</th>
-                                                        @elseif($invoice->invoice_module == 'Fleet' )
-                                                            <th class="text-dark">{{ __('Distance') }}</th>
-                                                        @elseif($invoice->invoice_module == 'RestaurantMenu')
-                                                            <th class="text-dark">{{ __('Item Name') }}</th>
-                                                        @endif
-
                                                         @if($invoice->invoice_module != 'Fleet' )
                                                             <th class="text-dark">{{ __('Quantity') }}</th>
                                                         @endif
@@ -701,24 +667,6 @@
                                                         <tr>
 
                                                             <td>{{ $key + 1 }}</td>
-
-                                                            @if ($invoice->invoice_module == 'account' || $invoice->invoice_module == 'machinerepair' || $invoice->invoice_module == 'musicinstitute' || $invoice->invoice_module == 'vehicleinspection')
-                                                                <td>{{ !empty($iteam->product_type) ? Str::ucfirst($iteam->product_type) : '--' }}</td>
-                                                                <td>{{ !empty($iteam->product()) ? $iteam->product()->name : '' }}</td>
-                                                            @elseif ($invoice->invoice_module == 'taskly')
-                                                                <td>{{ !empty($iteam->product()) ? $iteam->product()->title : '' }}</td>
-                                                            @elseif ($invoice->invoice_module == 'cmms' || $invoice->invoice_module == 'rent')
-                                                                <td>{{ !empty($iteam->product_type) ? Str::ucfirst($iteam->product_type) : '--' }}</td>
-                                                                <td>{{ !empty($iteam->product()) ? $iteam->product()->name : '' }}</td>
-                                                            @elseif ($invoice->invoice_module == 'lms')
-                                                                <td>{{ !empty($iteam->product()) ? $iteam->product()->title : '' }}</td>
-                                                            @elseif ($invoice->invoice_module == 'childcare' || $invoice->invoice_module == 'legalcase')
-                                                                <td>{{ !empty($iteam->product_name) ? $iteam->product_name : '' }}</td>
-                                                            @elseif ($invoice->invoice_module == 'cardealership' || $invoice->invoice_module == 'sales' || $invoice->invoice_module == 'newspaper' || $invoice->invoice_module == 'mobileservice')
-                                                                <td>{{ !empty($iteam->product()) ? $iteam->product()->name : '' }}</td>
-                                                            @elseif ($invoice->invoice_module == 'RestaurantMenu')
-                                                                <td>{{ !empty($iteam->product_name) ? $iteam->product_name : '' }}</td>
-                                                            @endif
 
                                                             @if($invoice->invoice_module == 'Fleet' )
                                                                 <td>{{ !empty($iteam->product()) ? $iteam->product()->distance : 0}}</td>
@@ -791,9 +739,6 @@
                                                     <tfoot>
                                                         <tr>
                                                             <td></td>
-                                                            @if ($invoice->invoice_module == 'account')
-                                                                <td></td>
-                                                            @endif
                                                             <td><b>{{ __('Total') }}</b></td>
                                                             @if($invoice->invoice_module == 'Fleet' )
                                                                 <td><b>{{ currency_format_with_sym($totalRate) }}</b></td>
@@ -807,11 +752,7 @@
                                                             <td></td>
                                                         </tr>
                                                         @php
-                                                            $colspan = 6;
-                                                            $customerInvoices = ['taskly', 'account', 'cmms', 'musicinstitute', 'rent','vehicleinspection','machinerepair'];
-                                                            if (in_array($invoice->invoice_module ,$customerInvoices)) {
-                                                                $colspan = 7;
-                                                            }
+                                                            $colspan = 4;
                                                         @endphp
                                                         @if($invoice->invoice_module != 'Fleet' )
                                                         <tr>

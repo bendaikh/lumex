@@ -50,11 +50,12 @@
     }
 
     .invoice-preview-main {
-        max-width: 750px;
-        width: 750px;
+        max-width: 800px;
+        width: 100%;
         margin: 0 auto;
         background: #ffff;
         box-shadow: 0 0 10px #ddd;
+        overflow: visible;
     }
     
     @media print {
@@ -102,7 +103,8 @@
     }
 
     .invoice-body {
-        padding: 20px 15px 0; /* Reduced padding */
+        padding: 20px 10px 0; /* Reduced padding */
+        overflow: visible;
     }
 
     table.add-border tr {
@@ -233,35 +235,44 @@
         word-wrap: break-word;
     }
 
-    /* Adjust column widths for better fit */
-    .items-table th:nth-child(1),
-    .items-table td:nth-child(1) {
-        width: 50px; /* Image column */
+    /* Clean table styling */
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
     }
-
-    .items-table th:nth-child(2),
-    .items-table td:nth-child(2) {
-        width: auto; /* Description column - takes remaining space */
+    
+    .items-table th,
+    .items-table td {
+        padding: 8px 4px;
+        text-align: center;
+        vertical-align: middle;
+        border-bottom: 1px solid #e0e0e0;
+        word-wrap: break-word;
     }
-
-    .items-table th:nth-child(3),
-    .items-table td:nth-child(3) {
-        width: 60px; /* Quantity column */
+    
+    .items-table th:first-child,
+    .items-table td:first-child {
+        text-align: left;
+        padding-left: 8px;
     }
-
-    .items-table th:nth-child(4),
-    .items-table td:nth-child(4) {
-        width: 90px; /* Price column */
+    
+    .items-table th:last-child,
+    .items-table td:last-child {
+        text-align: right;
+        padding-right: 8px;
     }
-
-    .items-table th:nth-child(5),
-    .items-table td:nth-child(5) {
-        width: 90px; /* Tax column */
+    
+    .items-table thead th {
+        font-weight: 700;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+        padding: 10px 4px;
     }
-
-    .items-table th:nth-child(6),
-    .items-table td:nth-child(6) {
-        width: 100px; /* Total column */
+    
+    .items-table tbody td {
+        font-size: 9px;
+        line-height: 1.3;
     }
 
     /* Proposal-style totals summary */
@@ -273,32 +284,39 @@
 
     /* Wrapper for summary section outside the items table */
     .totals-section-wrapper {
-        margin-top: 20px;
+        margin-top: 30px;
         padding: 0;
         display: flex;
-        justify-content: center; /* center the summary */
+        justify-content: flex-end; /* align to the right */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
     .totals-summary {
-        width: auto; /* dynamic width - only uses what's needed */
-        max-width: 100%;
+        width: 300px;
         border-collapse: collapse;
-        table-layout: auto; /* auto layout for flexibility */
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        overflow: hidden;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
     .totals-summary td {
-        padding: 8px 12px;
-        font-size: 13px;
+        padding: 10px 15px;
+        font-size: 12px;
+        border-bottom: 1px solid #e0e0e0;
     }
 
-    .totals-summary tr + tr td {
-        padding-top: 8px;
+    .totals-summary tr:last-child td {
+        border-bottom: none;
     }
 
     .totals-summary td:first-of-type {
         text-transform: uppercase;
-        letter-spacing: 0.4px;
+        letter-spacing: 0.3px;
         color: #374151;
+        font-weight: 600;
         font-weight: 600;
         text-align: left;
         white-space: nowrap;
@@ -318,8 +336,16 @@
     }
 
     .totals-summary__accent td {
-        background: #f3f4f6;
+        background: #f0f0f0;
+        color: #000000;
         font-weight: 700;
+        font-size: 13px;
+        border-top: 2px solid var(--theme-color);
+    }
+    
+    .totals-summary tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 </style>
 </head>
@@ -460,150 +486,58 @@
 
         </div>
         <div class="invoice-body" style="border-bottom: 15px solid var(--theme-color);">
-            <table class="add-border invoice-summary items-table" style="margin-top: 30px;">
-                <thead style="background-color: var(--theme-color);color: {{ $font_color }};">
+            <table class="items-table" style="margin-top: 30px; width: 100%;">
+                <colgroup>
+                    <col style="width: 35%;">
+                    <col style="width: 8%;">
+                    <col style="width: 15%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                    <col style="width: 17%;">
+                </colgroup>
+                <thead style="background-color: var(--theme-color); color: {{ $font_color }};">
                     <tr>
-                        @if($invoice->invoice_module != "Fleet")
-                            <th>{{ __('Image') }}</th>
-                        @endif
-                        @if($invoice->invoice_module == "account")
-                            <th>{{__('Item Type')}}</th>
-                        @endif
-                        @if($invoice->invoice_module == "Fleet")
-                            <th>{{ __('Distance') }}</th>
-                        @endif
-                        @if($invoice->invoice_module != "Fleet")
-                            <th>{{ __('Item') }}</th>
-                            <th>{{ __('Quantity') }}</th>
-                        @endif
-                        <th>{{ __('Rate') }}</th>
-                        @if($invoice->invoice_module == "Fleet")
-                            <th>{{ __('Discription') }}</th>
-                        @endif
-                        @if($invoice->invoice_module != "Fleet")
-                            <th>{{ __('Discount') }}</th>
-                            <th>{{ __('Tax') }} (%)</th>
-                        @endif
-                        <th>{{ __('Price') }}<small>{{ __('After discount & tax') }}</small></th>
-
+                        <th>{{ __('Article') }}</th>
+                        <th>{{ __('Qté') }}</th>
+                        <th>{{ __('P.U') }}</th>
+                        <th>{{ __('Rem.') }}</th>
+                        <th>{{ __('TVA') }}</th>
+                        <th>{{ __('Total') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (isset($invoice->itemData) && count($invoice->itemData) > 0)
-                    @foreach ($invoice->itemData as $key => $item)
-                    <tr>
-                        @if ($invoice->invoice_module != 'Fleet')
-                            <td>
-                                @php
-                                    $product_image = null;
-                                    if (!empty($item->product_id)) {
-                                        $product = \Workdo\ProductService\Entities\ProductService::find($item->product_id);
-                                        if ($product && !empty($product->image)) {
-                                            $product_image = get_file($product->image);
-                                        }
-                                    }
-                                @endphp
-                                @if($product_image)
-                                    <img src="{{ $product_image }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="Product">
-                                @else
-                                    <div style="width: 50px; height: 50px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-size: 10px;">N/A</div>
-                                @endif
-                            </td>
-                        @endif
-                        @if ($invoice->invoice_module == 'account')
-                            <td>{{ !empty($item->product_type) ? Str::ucfirst($item->product_type) : '--' }}
-                            </td>
-                        @endif
-                        <td>{{ $item->name }}</td>
-                        @if ($invoice->invoice_module != 'Fleet')
-                            <td>{{ $item->quantity }}</td>
-                        @endif
-                        <td>{{ currency_format_with_sym($item->price, $invoice->created_by, $invoice->workspace) }}
-                        </td>
-                        @if ($invoice->invoice_module == 'Fleet')
-                            <th>{{ $item->description }}</th>
-                        @endif
-                        @if ($invoice->invoice_module != 'Fleet')
-                            <td>{{ $item->discount != 0 ? number_format($item->discount, 2) . '%' : '-' }}
-                            </td>
-                            <td>
-                                @if (!empty($item->itemTax))
-                                    @foreach ($item->itemTax as $taxes)
-                                        <span>{{ $taxes['name'] }} </span><span> ({{ $taxes['rate'] }})
-                                        </span>
-                                        <span>{{ $taxes['price'] }}</span>
-                                    @endforeach
-                                @else
-                                    <p>-</p>
-                                @endif
-                            </td>
-                        @endif
-
-                        @if ($invoice->invoice_module == 'Fleet')
-                            @php
-                                $distance = !empty($item->name) ? $item->name : 0;
-                                $price = $item->price * $item->name;
-                            @endphp
-                            <td>{{ currency_format_with_sym($price, $invoice->created_by, $invoice->workspace) }}</td>
-                        @else
-                            <td>{{ currency_format_with_sym((($item->price * $item->quantity) * (1 - ($item->discount / 100))) + (isset($item->tax_price) ? $item->tax_price : 0), $invoice->created_by, $invoice->workspace) }}
-                            </td>
-                        @endif
-                        @if ($invoice->invoice_module != 'Fleet')
-                            @if ($item->description != null)
-                                <tr class="border-0 itm-description ">
-                                    <td colspan="6">{{ $item->description }} </td>
-                                </tr>
-                            @endif
-                        @endif
-                @endforeach
-                @else
-                    <tr>
-                        @if($invoice->invoice_module != "Fleet")
-                            <td>-</td>
-                        @endif
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>
-                            <p>-</p>
-                            <p>-</p>
-                        </td>
-                        <td>-</td>
-                        <td>-</td>
-                    <tr class="border-0 itm-description ">
-                        <td colspan="7">-</td>
-                    </tr>
-                    </tr>
+                        @foreach ($invoice->itemData as $key => $item)
+                            <tr>
+                                <td style="text-align: left;">
+                                    <strong>{{ $item->name }}</strong>
+                                    @if ($item->description != null)
+                                        <br><small style="color: #666;">{{ $item->description }}</small>
+                                    @endif
+                                </td>
+                                <td>{{ $item->quantity }}</td>
+                                <td>{{ currency_format_with_sym($item->price, $invoice->created_by, $invoice->workspace) }}</td>
+                                <td>{{ $item->discount != 0 ? number_format($item->discount, 2) . '%' : '-' }}</td>
+                                <td>
+                                    @if (!empty($item->itemTax))
+                                        @foreach ($item->itemTax as $taxes)
+                                            {{ $taxes['rate'] }}
+                                        @endforeach
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td style="text-align: right; font-weight: 600;">
+                                    {{ currency_format_with_sym((($item->price * $item->quantity) * (1 - ($item->discount / 100))) + (isset($item->tax_price) ? $item->tax_price : 0), $invoice->created_by, $invoice->workspace) }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px;">{{ __('No items') }}</td>
+                        </tr>
                     @endif
                 </tbody>
-                <tfoot>
-                    <tr>
-                        @if($invoice->invoice_module != "Fleet")
-                            <td></td>
-                        @endif
-                        @if($invoice->invoice_module == "account")
-                            <td></td>
-                        @endif
-                        <td>{{ __('Total') }}</td>
-                        @if ($invoice->invoice_module == 'Fleet')
-                            <td><b>{{ currency_format_with_sym($invoice->totalRate, $invoice->created_by, $invoice->workspace) }}</b>
-                            </td>
-                            <td></td>
-                        @else
-                            <td>{{ $invoice->totalQuantity }}</td>
-
-                            <td>{{ currency_format_with_sym($invoice->totalRate, $invoice->created_by, $invoice->workspace) }}
-                            </td>
-                            <td>{{ currency_format_with_sym($invoice->getTotalDiscount(), $invoice->created_by, $invoice->workspace) }}
-                            </td>
-                            <td>{{ currency_format_with_sym($invoice->totalTaxPrice, $invoice->created_by, $invoice->workspace) }}
-                            </td>
-                            <td>{{ currency_format_with_sym($invoice->getSubTotal(), $invoice->created_by, $invoice->workspace) }}
-                            </td>
-                        @endif
-                    </tr>
-                </tfoot>
             </table>
 
             <!-- Summary Section - Outside items table for full width -->

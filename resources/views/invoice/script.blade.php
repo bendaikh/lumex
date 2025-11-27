@@ -21,7 +21,7 @@
                 logging: false,
                 scrollY: 0,
                 scrollX: 0,
-                windowWidth: 1200
+                windowWidth: 800
             },
             jsPDF: {
                 unit: 'in',
@@ -32,7 +32,7 @@
                 mode: ['css', 'legacy'],
                 before: '.page-break-before',
                 after: '.page-break-after',
-                avoid: ['.no-page-break', 'tr', '.items-table tbody tr', '.items-table tfoot', '.itm-description']
+                avoid: ['.no-page-break', 'tr', '.items-table tbody tr', '.items-table tfoot', '.itm-description', '.totals-section-wrapper', '.totals-summary', '.totals-summary__accent']
             }
         };
 
